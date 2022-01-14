@@ -14,7 +14,7 @@ delay= 30 #FPS do vídeo
 
 detec = []
 carros= 0
-
+sdfsdfsdfsdfsd
 	
 def pega_centro(x, y, w, h):
     x1 = int(w / 2)
