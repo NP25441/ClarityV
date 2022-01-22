@@ -25,7 +25,7 @@ def pega_centro(x, y, w, h):
 
 cap = cv2.VideoCapture('video-1.mp4')
 subtracao = cv2.createBackgroundSubtractorMOG2()
-
+dfgdfgdfg
 while True:
     ret , frame1 = cap.read()
     tempo = float(1/delay)
