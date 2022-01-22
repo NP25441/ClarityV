@@ -23,7 +23,7 @@ def pega_centro(x, y, w, h):
     cy = y + y1
     return cx,cy
 
-cap = cv2.VideoCapture('video.mp4')
+cap = cv2.VideoCapture('video-1.mp4')
 subtracao = cv2.createBackgroundSubtractorMOG2()
 
 while True:
