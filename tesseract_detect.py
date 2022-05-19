@@ -4,8 +4,19 @@ import numpy as np
 import pytesseract
 from PIL import Image
 from PIL import Image, ImageGrab
+import pythainlp.util
+from pythainlp.tokenize.multi_cut import find_all_segment, mmcut, segment
+from pythainlp.corpus.common import thai_words
+from pythainlp.util import Trie
+from pythainlp import word_tokenize
 
-img = cv2.imread('y-r47.jpg') #นำเข้ารูปภาพ
+city = ['เชียงราย', 'เชียงใหม่', 'น่าน', 'พะเยา', 'แพร่', 'แม่ฮ่องสอน', 'ลำปาง', 'ลำพูน', 'อุตรดิตถ์', 'กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร',
+        'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี',
+        'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี', 'จันทบุรี', 'ฉะเชิงเทรา',
+        'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
+        'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
+
+img = cv2.imread('y-r46.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
 gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
@@ -62,16 +73,12 @@ for b in boxes.splitlines():
       cv2.rectangle(Cropped,(z,h_Cropped-y),(w,h_Cropped-h),(255,255,0),2)
 
 
+#อ่านข้อความจากรูปภาพ
+text = pytesseract.image_to_string(Cropped , lang='eng_00+tha+tha_00+tha_01+tha_02+eng', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างนวมเข้าด้วยกัน
+print("Detected Number is: ",text.replace(" ",""))#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
+word_tokenize(text, keep_whitespace=False)
+print(find_all_segment(text))
 
 
-
-
-
-
-
-#Read the number plate
-text = pytesseract.image_to_string(Cropped , lang='tha_01+eng+tha_02+tha_00+eng_00+tha', config='--psm 11')
-print("Detected Number is:",text)
-
-cv2.imshow("Image", Cropped)
-cv2.waitKey(0)
+cv2.imshow("Image", Cropped)#แสดงรูปภาพที่ได้จากการทำงาน
+cv2.waitKey(0)#รอการกดปุ่มเพื่อคืนค่า
