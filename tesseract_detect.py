@@ -5,16 +5,21 @@ import pytesseract
 from PIL import Image
 from PIL import Image, ImageGrab
 import pythainlp.util
+import deepcut
 from pythainlp.tokenize.multi_cut import find_all_segment, mmcut, segment
 from pythainlp.corpus.common import thai_words
 from pythainlp.util import Trie
-from pythainlp import word_tokenize
+from pythainlp import sent_tokenize, word_tokenize
+from pythainlp.corpus.common import thai_words
+from pythainlp import Tokenizer
+from pythainlp.util import normalize
+import difflib
 
-city = ['เชียงราย', 'เชียงใหม่', 'น่าน', 'พะเยา', 'แพร่', 'แม่ฮ่องสอน', 'ลำปาง', 'ลำพูน', 'อุตรดิตถ์', 'กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร',
-        'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี',
-        'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี', 'จันทบุรี', 'ฉะเชิงเทรา',
-        'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
-        'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
+#city = ['เชียงราย', 'เชียงใหม่', 'น่าน', 'พะเยา', 'แพร่', 'แม่ฮ่องสอน', 'ลำปาง', 'ลำพูน', 'อุตรดิตถ์', 'กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร',
+#        'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี',
+#        'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี', 'จันทบุรี', 'ฉะเชิงเทรา',
+#        'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
+#        'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
 
 img = cv2.imread('y-r46.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
@@ -74,11 +79,35 @@ for b in boxes.splitlines():
 
 
 #อ่านข้อความจากรูปภาพ
-text = pytesseract.image_to_string(Cropped , lang='eng_00+tha+tha_00+tha_01+tha_02+eng', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างนวมเข้าด้วยกัน
-print("Detected Number is: ",text.replace(" ",""))#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
-word_tokenize(text, keep_whitespace=False)
-print(find_all_segment(text))
+text = pytesseract.image_to_string(Cropped , lang='tha_03', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างรวมเข้าด้วยกัน
+text_l = text.split('\n')
+del text_l[1]
+del text_l[2]
+print("Detected Number is: ",text_l)#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
+
+for _i,demo in enumerate(text_l):
+      text_l1 = text_l[_i]
+      #text_l2 = text_l[_i+1]
+
+city = 'นครสวรรค์'
+seq = difflib.SequenceMatcher(None,text_l1,city)
+xxxx = seq.ratio()*100
+print(xxxx) 
+      
+#print(find_all_segment(text))
+#print("default dictionary:", word_tokenize(text))
+#text.translate({ord(i): None for i in 'ภ'})
+#words = set(city)
+
+#custom_tokenizer = Tokenizer(words)
+#print("custom dictionary :", custom_tokenizer.word_tokenize(text))
+#deepcut.tokenize(text ,custom_dict=["วรรค์"])
+#print(text)
+
+#print("deepcut  :", word_tokenize(text, engine="deepcut"))
 
 
-cv2.imshow("Image", Cropped)#แสดงรูปภาพที่ได้จากการทำงาน
-cv2.waitKey(0)#รอการกดปุ่มเพื่อคืนค่า
+
+
+#cv2.imshow("Image", Cropped)#แสดงรูปภาพที่ได้จากการทำงาน
+#cv2.waitKey(0)#รอการกดปุ่มเพื่อคืนค่า
