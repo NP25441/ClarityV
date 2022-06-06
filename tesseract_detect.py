@@ -14,14 +14,19 @@ City_Ref = ['เชียงราย', 'เชียงใหม่', 'น่�
         'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
         'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
 
-city_Acc1 = []
-Acc1 = []
+city_Ans = []
 
-city_Acc2 = []
-Acc2 = []
 
-city_Acc3 = []
-Acc3 = []
+
+#เปลี่ยน List เป็น Dict
+def Convert(city_Ans):
+      res_dct = {city_Ans[i]: city_Ans[i + 1] for i in range(0, len(city_Ans), 2)}
+      return res_dct
+
+#เรียงลำดับของข้อมูลภายใน List
+def myFunc(e):
+      return e['Acc']
+
 
 #กระบวนการทำงานของ CV2
 img = cv2.imread('y-r46.jpg') #นำเข้ารูปภาพ
@@ -106,22 +111,18 @@ for _i,t2 in enumerate(text_2):
 for _i ,city in enumerate (City_Ref):
       seq = difflib.SequenceMatcher(None,text_2,city)
       Accuracy = seq.ratio()*100
-      if Accuracy >= 80.00:
-            city_Acc1.append(city)
-            Acc1.append(Accuracy)
+      if Accuracy >= 30.00:
+            city_Ans.append({'จังหวัด':city,'Acc':Accuracy})
+            #city_Ans.append(Accuracy)
             #print(Accuracy)
-      elif Accuracy >= 50.00 <=79.99:
-            city_Acc2.append(city)
-            Acc2.append(Accuracy)
-            #print(Accuracy)
-      elif Accuracy >= 30.00 <= 49.99:
-            city_Acc3.append(city)
-            Acc2.append(Accuracy)
-            #print(Accuracy)
+            
+
+city_Ans.sort(key=myFunc, reverse=True)
+
 
 #แสดงข้อมูลที่ได้จากรูปภาพ
 print("Detected Number is: ",text_1)#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
-print("Detected City is: ",city_Acc1,city_Acc2)
+print("Detected City is: ",city_Ans[0:5])
 
 
 

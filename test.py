@@ -1,7 +1,7 @@
 import difflib
 
-a = 'เช ย าย'
-b = 'เชียงราย'
+a = 'นครxxx'
+b = 'นครปฐม'
 #b = 'นครพนม'
 
 seq = difflib.SequenceMatcher(None,a,b)
