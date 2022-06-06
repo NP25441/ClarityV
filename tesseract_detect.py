@@ -122,7 +122,7 @@ city_Ans.sort(key=myFunc, reverse=True)
 
 #แสดงข้อมูลที่ได้จากรูปภาพ
 print("Detected Number is: ",text_1)#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
-print("Detected City is: ",city_Ans[0:5])
+print("Detected City is: ",city_Ans[0:10])
 
 
 
