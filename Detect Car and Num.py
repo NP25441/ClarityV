@@ -1,94 +1,122 @@
+#นำเข้าเครื่องมือที่ใช้ทั้งหมด
 import cv2
 import numpy as np
 import time
 from time import sleep
 
-largura_min=80 #Largura minima do retangulo
-altura_min=80 #Altura minima do retangulo
+#กำหนดค่าความกว้างของกรอบของเส้น
+width_min = 80 
+#กำหนดค่าความสูงของกรอบของเส้น
+height_min = 80 
 
-offset=6 #Erro permitido entre pixel  
+#กำหนดอัตราการผิดพลาดที่น่าเชื่อถือ
+offset= 5  
 
-pos_linha=550 #Posição da linha de contagem 
+#ตำแหน่งของเส้น
+pos_line_1 = 450
+pos_line_2 = 650 
 
-delay= 30 #FPS do vídeo
+#ควบคุม FPS ของ Video
+frame_rate= 30
 
-detec = []
-carros= 0
+#ใช้เก็บค่าของจุด X,Y
+detect_1 = []
+detect_2 = []
 
-	
-def pega_centro(x, y, w, h):
+#นับจำนวนของรถที่ตรวจจับได้ในระบบ
+detect_line_1 = 0
+detect_line_2= 0
+
+#ฟังก์ชันบอกจุดทีแดงที่เป็นใจกลางของกรอบ detect	
+def coordinate_red_dot(x, y, w, h):
     x1 = int(w / 2)
     y1 = int(h / 2)
     cx = x + x1
     cy = y + y1
     return cx,cy
 
-cap = cv2.VideoCapture('video-1.mp4')
-subtracao = cv2.createBackgroundSubtractorMOG2()
+#นำเข้าไฟล์วิดีโอ
+video_ref = cv2.VideoCapture('video-1.mp4')
+
+# ตรวจสอบการเคลื่อนไหวของรถ
+motion_detect = cv2.createBackgroundSubtractorMOG2()
 
 while True:
-    ret , frame1 = cap.read()
-    tempo = float(1/delay)
-    sleep(tempo) 
-    grey = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    #อ่านค่าจากวิดีโอ
+    ret , frame1 = video_ref.read()
+    
+    #ควบคุมความเร็วของวิดีโอ
+    speed = float(1/frame_rate)
+    sleep(speed)
+    
+    #ทำภาพให้เป็นขาว-ดำ
+    grey = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY) 
+    #ทำให้ภาพเบลอโดยมีขนาด 3*3
     blur = cv2.GaussianBlur(grey,(3,3),5)
-    img_sub = subtracao.apply(blur)
-    dilat = cv2.dilate(img_sub,np.ones((5,5)))
+    #ทำภาพให้สกัดส่วนที่เคลื่อนไหว
+    img_sub = motion_detect.apply(blur)
+    #ทำให้ภาพขยายเป็นขนาด 5*5
+    dilat = cv2.dilate(img_sub,np.ones((5,5))) 
+    #ทำการสกัดขอบภายในภาพ
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     dilatada = cv2.morphologyEx (dilat, cv2. MORPH_CLOSE , kernel)
     dilatada = cv2.morphologyEx (dilatada, cv2. MORPH_CLOSE , kernel)
+    #สรุปผลลัพธ์ของการสกัดส่วนที่เคลื่อนไหว
     contorno,h=cv2.findContours(dilatada,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
+
+    #สร้างเส้นสำหรับตรวจจับรถ เส้นที่ 1
+    cv2.line(frame1, (25, pos_line_1), (1200, pos_line_1), (255,127,0), 2)
+    #สร้างเส้นสำหรับตรวจจับรถ เส้นที่ 2
+    cv2.line(frame1, (25, pos_line_2), (1200, pos_line_2), (255,127,0), 2)
     
-    cv2.line(frame1, (25, pos_linha), (1200, pos_linha), (255,127,0), 2) 
+    #ลูปการสร้างกรอบสำหรับใส่ให้กับวัตถุที่ตรวจจับได้
     for(i,c) in enumerate(contorno):
         (x,y,w,h) = cv2.boundingRect(c)
-        validar_contorno = (w >= largura_min) and (h >= altura_min)
+        validar_contorno = (w >= width_min) and (h >= height_min)
         if not validar_contorno:
             continue
-
+        
+        
+        #รวมกรอบกับจุด
         cv2.rectangle(frame1,(x,y),(x+w,y+h),(0,255,0),2)        
-        centro = pega_centro(x, y, w, h)
-        detec.append(centro)
-        cv2.circle(frame1, centro, 4, (0, 0,255), -1)
-
-        for (x,y) in detec:
-            if y<(pos_linha+offset) and y>(pos_linha-offset):
-                carros+=1
-                cv2.line(frame1, (25, pos_linha), (1200, pos_linha), (0,127,255), 2)  
-                detec.remove((x,y))
-                print("car is detected : "+str(carros))     
-    
-    cv2.line(frame1, (25, pos_linha), (1200, pos_linha), (255,127,0), 2) 
-    for(i,c) in enumerate(contorno):
-        (x,y,w,h) = cv2.boundingRect(c)
-        validar_contorno = (w >= largura_min) and (h >= altura_min)
-        if not validar_contorno:
-            continue
-
-        cv2.rectangle(frame1,(x,y),(x+w,y+h),(0,255,0),2)        
-        centro = pega_centro(x, y, w, h)
-        detec.append(centro)
-        cv2.circle(frame1, centro, 4, (0, 0,255), -1)
-
-        for (x,y) in detec:
-            if y<(pos_linha+offset) and y>(pos_linha-offset):
-                carros+=1
-                cv2.line(frame1, (25, pos_linha), (1200, pos_linha), (0,127,255), 2)  
-                detec.remove((x,y))
-                print("car is detected : "+str(carros))     
-
-
-    
+        coordinate = coordinate_red_dot(x, y, w, h)
+        #เพิ่มค่าเข้าไปใน List detect_1
+        detect_1.append(coordinate)
+        #เพิ่มค่าเข้าไปใน List detect_2
+        detect_2.append(coordinate)
+        cv2.circle(frame1, coordinate, 4, (0, 0,255), -1)
+        
+        
+        #เส้นตรวจจับที่ 1
+        for (x,y) in detect_1:
+            if y<(pos_line_1+offset) and y>(pos_line_1-offset):
+                detect_line_1+=1
+                cv2.line(frame1, (25, pos_line_1), (1200, pos_line_1), (0,127,255), 2)  
+                detect_1.remove((x,y))
+                print("Detected_1 : "+str(detect_line_1)) 
+                #print(detect_1)
                 
-                 
-       
-    cv2.putText(frame1, "VEHICLE COUNT : "+str(carros), (450, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255),5)
+        #เส้นตรวจจับที่ 2
+        for (x,y) in detect_2:
+            if y<(pos_line_2+offset) and y>(pos_line_2-offset):
+                detect_line_2+=1
+                cv2.line(frame1, (25, pos_line_2), (1200, pos_line_2), (0,127,255), 2)  
+                detect_2.remove((x,y))
+                print("Detected_2 : "+str(detect_line_2)) 
+                #print(detect_2)
+
+
+    #ใส่ข้อความไปในวิดีโอ
+    cv2.putText(frame1, "Line1 : "+str(detect_line_1), (250, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255),4)
+    cv2.putText(frame1, "Line2 : "+str(detect_line_2), (750, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255),4)
+    #แสดงผลลัพธ์ของวิดีโอ
     cv2.imshow("Main Video" , frame1)
+    #แสดงผลลัพธ์ของวิดีโอตรวจจับ
     cv2.imshow("Detect Screen",dilatada)
 
     if cv2.waitKey(1) == 27:
         break
     
+#คืนทรัพยากรให้กับระบบ    
 cv2.destroyAllWindows()
-cap.release()
