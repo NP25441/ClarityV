@@ -17,7 +17,7 @@ pos_line_1 = 450
 pos_line_2 = 650 
 
 #ควบคุม FPS ของ Video
-frame_rate= 30
+frame_rate= 120
 
 #ใช้เก็บค่าของจุด X,Y
 detect_1 = []
@@ -36,7 +36,7 @@ def coordinate_red_dot(x, y, w, h):
     return cx,cy
 
 #นำเข้าไฟล์วิดีโอ
-video_ref = cv2.VideoCapture('video-1.mp4')
+video_ref = cv2.VideoCapture('video-2.mp4')
 
 # ตรวจสอบการเคลื่อนไหวของรถ
 motion_detect = cv2.createBackgroundSubtractorMOG2()
