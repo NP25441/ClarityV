@@ -6,6 +6,7 @@ import pytesseract
 from PIL import Image
 from PIL import Image, ImageGrab
 import difflib
+import os
 
 
 #List ข้อมูลจังหวัด
@@ -16,10 +17,10 @@ City_Ref = ['เชียงราย', 'เชียงใหม่', 'น่�
         'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
 
 #List ข้อมูลความถูกต้องของจังหวัด
-city_Ans = []
+city_Ans = []*len(City_Ref)
 
 #List เก็บข้อมูลทั้งหมดมาแสดงผล
-data_show = []
+data_show = []*len(City_Ref)
 
 
 #เปลี่ยน List เป็น Dict
@@ -36,95 +37,106 @@ def myFunc(e):
 path       = "D:\Develop\Senior_Project\ClarityV\plate_loop_test"
 
 
-#กระบวนการทำงานของ CV2
-img = cv2.imread('plate_loop_test\y-r165.jpg') #นำเข้ารูปภาพ
-img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
-gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
-edged = cv2.Canny(gray, 30, 200) #สักเอาขอบของรูปภาพผ่าน Filter
+#วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+for images in os.listdir(path):
+      #ป้องกัน error แล้วเด้งออกจากการทำงาน
+      try:
+            #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+            if (images.endswith(".jpg")):
+                  full_path = path + "\\" + str(images)
+                  
+                  #กระบวนการทำงานของ CV2
+                  img = cv2.imread(full_path) #นำเข้ารูปภาพ
+                  img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
+                  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
+                  gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
+                  edged = cv2.Canny(gray, 30, 200) #สักเอาขอบของรูปภาพผ่าน Filter
 
-# find contours in the edged image, keep only the largest
-# ones, and initialize our screen contour
-cnts = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnts = imutils.grab_contours(cnts)
-cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
-screenCnt = None
+                  # find contours in the edged image, keep only the largest
+                  # ones, and initialize our screen contour
+                  cnts = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                  cnts = imutils.grab_contours(cnts)
+                  cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
+                  screenCnt = None
 
-plate = []
-# loop over our contours
-for c in cnts:
- # approximate the contour
- peri = cv2.arcLength(c, True)
- approx = cv2.approxPolyDP(c, 0.018 * peri, True)
- 
- # if our approximated contour has four points, then
- # we can assume that we have found our screen
- if len(approx) == 4:
-  screenCnt = approx
-  plate.append(screenCnt)
+                  plate = []
+                  # loop over our contours
+                  for c in cnts:
+                  # approximate the contour
+                        peri = cv2.arcLength(c, True)
+                        approx = cv2.approxPolyDP(c, 0.018 * peri, True)
+                  
+                  # if our approximated contour has four points, then
+                  # we can assume that we have found our screen
+                        if len(approx) == 4:
+                              screenCnt = approx
+                              plate.append(screenCnt)
 
- 
-if screenCnt is None:
- detected = 0
- print ("No contour detected")
-else:
- cv2.drawContours(img, [screenCnt], -1, (0, 255, 0), 3)
+                  
+                  if screenCnt is None:
+                        detected = 0
+                        print ("No contour detected")
+                  else:
+                        cv2.drawContours(img, [screenCnt], -1, (0, 255, 0), 3)
 
-# Masking the part other than the number plate
-mask = np.zeros(gray.shape,np.uint8)
-print(mask)
-new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
-new_image = cv2.bitwise_and(img,img,mask=mask)
+                  # Masking the part other than the number plate
+                  mask = np.zeros(gray.shape,np.uint8)
+                  new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
+                  new_image = cv2.bitwise_and(img,img,mask=mask)
 
-# Now crop
-(x, y) = np.where(mask == 255)
-(topx, topy) = (np.min(x), np.min(y))
-(bottomx, bottomy) = (np.max(x), np.max(y))
-Cropped = gray[topx:bottomx+1, topy:bottomy+1]
-
-
-#print(pytesseract.image_to_boxes(Cropped))
-
-h_Cropped, w_Cropped = Cropped.shape
-boxes = pytesseract.image_to_boxes(Cropped)
-
-for b in boxes.splitlines():
-      b = b.split(' ')
-      z,y,w,h = int(b[1]),int(b[2]),int(b[3]),int(b[4])
-      # print (z,y,w,h)
-      cv2.rectangle(Cropped,(z,h_Cropped-y),(w,h_Cropped-h),(255,255,0),2)
+                  # Now crop
+                  (x, y) = np.where(mask == 255)
+                  (topx, topy) = (np.min(x), np.min(y))
+                  (bottomx, bottomy) = (np.max(x), np.max(y))
+                  Cropped = gray[topx:bottomx+1, topy:bottomy+1]
 
 
-#อ่านข้อความจากรูปภาพ
-text_1 = pytesseract.image_to_string(Cropped , lang='eng+tha_03', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างรวมเข้าด้วยกัน
-text_2 = pytesseract.image_to_string(Cropped , lang='tha_03', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างรวมเข้าด้วยกัน
+                  #print(pytesseract.image_to_boxes(Cropped))
 
-#ลบการเว้นบรรทัดที่ไม่ต้องการ
-text_1 = text_1.split('\n')
-text_2 = text_2.split('\n')
+                  h_Cropped, w_Cropped = Cropped.shape
+                  boxes = pytesseract.image_to_boxes(Cropped)
 
-#ลบการเว้นวรรคที่ไม่ต้องการ
-del text_1[1] ,text_1[2]
-del text_2[1] ,text_2[2]
+                  for b in boxes.splitlines():
+                        b = b.split(' ')
+                        z,y,w,h = int(b[1]),int(b[2]),int(b[3]),int(b[4])
+                        # print (z,y,w,h)
+                        cv2.rectangle(Cropped,(z,h_Cropped-y),(w,h_Cropped-h),(255,255,0),2)
 
-#ลบตำแหน่งที่ไม่ต้องการ
-for _i,t1 in enumerate(text_1):
-      text_1 = text_1[:_i+1]
-      
-for _i,t2 in enumerate(text_2):
-      #text_l1 = text_1[_i]
-      text_2 = t2
 
-#ลูปที่ใช้เปรียบเทียบความถูกต้องของข้อความที่ได้จากรูปภาพ
-for _i ,city in enumerate (City_Ref):
-      seq = difflib.SequenceMatcher(None,text_2,city)
-      Accuracy = seq.ratio()*100
-      if Accuracy >= 30.00:
-            city_Ans.append({'ป้ายทะเบียน':text_1,'จังหวัด':city,'Acc':Accuracy})
-            
+                  #อ่านข้อความจากรูปภาพ
+                  text_license = pytesseract.image_to_string(Cropped , lang='eng+tha_03', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างรวมเข้าด้วยกัน
+                  text_city = pytesseract.image_to_string(Cropped , lang='tha_03', config='--psm 11')#ใช้Tesseract-OCR กับ Model ที่สร้างรวมเข้าด้วยกัน
 
-city_Ans.sort(key=myFunc, reverse=True)
-data_show.append(city_Ans[0])
+                  #ลบการเว้นบรรทัดที่ไม่ต้องการ
+                  text_license = text_license.split('\n')
+                  text_city = text_city.split('\n')
+
+                  #ลบการเว้นวรรคที่ไม่ต้องการ
+                  del text_license[1] ,text_license[2]
+                  del text_city[1] ,text_city[2]
+
+                  #ลบตำแหน่งที่ไม่ต้องการ
+                  for _i,t1 in enumerate(text_license):
+                        text_license = text_license[:_i+1]
+                        
+                  for _i,t2 in enumerate(text_city):
+                        #text_l1 = text_license[_i]
+                        text_city = t2
+
+                  #ลูปที่ใช้เปรียบเทียบความถูกต้องของข้อความที่ได้จากรูปภาพ
+                  for _i ,city in enumerate (City_Ref):
+                        seq = difflib.SequenceMatcher(None,text_city,city)
+                        Accuracy = seq.ratio()*100
+                        if Accuracy >= 30.00:
+                              city_Ans.append({'ป้ายทะเบียน':text_license,'จังหวัด':city,'Acc':Accuracy})
+                              
+
+            city_Ans.sort(key=myFunc, reverse=True)
+            data_show.append(city_Ans[0])
+            city_Ans = []
+
+      except Exception as e:
+                  print(str(e))
 
 
 #แสดงข้อมูลที่ได้จากรูปภาพ
