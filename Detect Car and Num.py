@@ -94,7 +94,7 @@ while True:
                 detect_line_1+=1
                 cv2.line(frame1, (25, pos_line_1), (1200, pos_line_1), (0,127,255), 2)  
                 detect_1.remove((x,y))
-                print("Detected_1 : "+str(detect_line_1)) 
+                print("Detected_1 : "+str(detect_line_1))
                 #print(detect_1)
                 
         #เส้นตรวจจับที่ 2
@@ -114,6 +114,7 @@ while True:
     cv2.imshow("Main Video" , frame1)
     #แสดงผลลัพธ์ของวิดีโอตรวจจับ
     cv2.imshow("Detect Screen",dilatada)
+    
 
     if cv2.waitKey(1) == 27:
         break

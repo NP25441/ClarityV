@@ -7,15 +7,19 @@ from PIL import Image
 from PIL import Image, ImageGrab
 import difflib
 
-#List ข้อมูลทั้งหมด
+
+#List ข้อมูลจังหวัด
 City_Ref = ['เชียงราย', 'เชียงใหม่', 'น่าน', 'พะเยา', 'แพร่', 'แม่ฮ่องสอน', 'ลำปาง', 'ลำพูน', 'อุตรดิตถ์', 'กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร',
         'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี',
         'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี', 'จันทบุรี', 'ฉะเชิงเทรา',
         'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
         'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
 
+#List ข้อมูลความถูกต้องของจังหวัด
 city_Ans = []
 
+#List เก็บข้อมูลทั้งหมดมาแสดงผล
+data_show = []
 
 
 #เปลี่ยน List เป็น Dict
@@ -23,13 +27,17 @@ def Convert(city_Ans):
       res_dct = {city_Ans[i]: city_Ans[i + 1] for i in range(0, len(city_Ans), 2)}
       return res_dct
 
+
 #เรียงลำดับของข้อมูลภายใน List
 def myFunc(e):
       return e['Acc']
 
+#ตำแหน่งของข้อมูลในเครื่อง
+path       = "D:\Develop\Senior_Project\ClarityV\plate_loop_test"
+
 
 #กระบวนการทำงานของ CV2
-img = cv2.imread('y-r46.jpg') #นำเข้ารูปภาพ
+img = cv2.imread('plate_loop_test\y-r165.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
 gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
@@ -64,6 +72,7 @@ else:
 
 # Masking the part other than the number plate
 mask = np.zeros(gray.shape,np.uint8)
+print(mask)
 new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
 new_image = cv2.bitwise_and(img,img,mask=mask)
 
@@ -82,7 +91,7 @@ boxes = pytesseract.image_to_boxes(Cropped)
 for b in boxes.splitlines():
       b = b.split(' ')
       z,y,w,h = int(b[1]),int(b[2]),int(b[3]),int(b[4])
-      print (z,y,w,h)
+      # print (z,y,w,h)
       cv2.rectangle(Cropped,(z,h_Cropped-y),(w,h_Cropped-h),(255,255,0),2)
 
 
@@ -100,8 +109,7 @@ del text_2[1] ,text_2[2]
 
 #ลบตำแหน่งที่ไม่ต้องการ
 for _i,t1 in enumerate(text_1):
-      #text_l1 = text_1[_i]
-      text_1 = text_1[ _i]
+      text_1 = text_1[:_i+1]
       
 for _i,t2 in enumerate(text_2):
       #text_l1 = text_1[_i]
@@ -112,17 +120,15 @@ for _i ,city in enumerate (City_Ref):
       seq = difflib.SequenceMatcher(None,text_2,city)
       Accuracy = seq.ratio()*100
       if Accuracy >= 30.00:
-            city_Ans.append({'จังหวัด':city,'Acc':Accuracy})
-            #city_Ans.append(Accuracy)
-            #print(Accuracy)
+            city_Ans.append({'ป้ายทะเบียน':text_1,'จังหวัด':city,'Acc':Accuracy})
             
 
 city_Ans.sort(key=myFunc, reverse=True)
+data_show.append(city_Ans[0])
 
 
 #แสดงข้อมูลที่ได้จากรูปภาพ
-print("Detected Number is: ",text_1)#แสดงผลลัพธ์ที่ได้จากการอ่านข้อความ
-print("Detected City is: ",city_Ans[0:10])
+print("Detected City is: ",data_show)
 
 
 
