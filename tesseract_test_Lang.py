@@ -10,7 +10,7 @@ def trim_str(raw_txt):
     return new_txt
 
 if __name__ == '__main__':
-    img = Image.open('y-r47.jpg')
+    img = Image.open('Test_data\y-r46.jpg')
     result=pytesseract.image_to_string(img, lang='tha+eng')
     new_txt=trim_str(result)
     print(new_txt)
