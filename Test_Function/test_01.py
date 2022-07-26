@@ -5,7 +5,7 @@ from keras.models import load_model
 model = load_model('model_car')
 print(model.summary())
 
-img_path = r'Test_data\2DCX30J18R7X.jpg'
+img_path = r'Test_data\image.jpg'
 
 classFile = 'coco.names'
 detector = Detector()

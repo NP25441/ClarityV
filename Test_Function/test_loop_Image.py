@@ -6,7 +6,7 @@ import os
 
 images_per_class = 80
 fixed_size       = (620, 480)
-path       = "D:\Develop\Senior_Project\ClarityV\plate_loop_test"
+path       = "Test_Loop_Tessract"
 
 # train_labels = os.listdir(path)
 # for training_name in train_labels:

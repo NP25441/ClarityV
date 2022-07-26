@@ -38,7 +38,7 @@ def coordinate_red_dot(x, y, w, h):
     return cx,cy
 
 #นำเข้าไฟล์วิดีโอ
-video_ref = cv2.VideoCapture('D:\Develop\Senior_Project\ClarityV\Test_data\Video-3.mp4')
+video_ref = cv2.VideoCapture('Test_data\Video-2.mp4')
 
 # ตรวจสอบการเคลื่อนไหวของรถ
 motion_detect = cv2.createBackgroundSubtractorMOG2()

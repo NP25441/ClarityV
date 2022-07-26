@@ -35,7 +35,7 @@ def myFunc(e):
 
 
 #กระบวนการทำงานของ CV2
-img = cv2.imread('plate_loop_test\y-r165.jpg') #นำเข้ารูปภาพ
+img = cv2.imread('Test_Loop_Tessract\g-bk0.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
 gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น

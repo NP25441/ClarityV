@@ -1,6 +1,6 @@
 from keras.models import load_model
 
-model = load_model('model_car')
+model = load_model('model_car(VGG16)')
 model.summary()
 print("Loaded Model from disk")
 
