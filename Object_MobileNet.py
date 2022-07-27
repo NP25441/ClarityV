@@ -10,9 +10,9 @@ CLASSES = ["BACKGROUND", "AEROPLANE", "BICYCLE", "BIRD", "BOAT",
 #สีตัวกรอบที่วาดrandomใหม่ทุกครั้ง
 COLORS = np.random.uniform(0,100, size=(len(CLASSES), 3))
 #โหลดmodelจากแฟ้ม
-net = cv2.dnn.readNetFromCaffe("obj-detect\MobileNetSSD.prototxt","obj-detect\MobileNetSSD.caffemodel")
+net = cv2.dnn.readNetFromCaffe("model_car(MobileNet)\MobileNetSSD.prototxt","model_car(MobileNet)\MobileNetSSD.caffemodel")
 #เลือกวิดีโอ/เปิดกล้อง
-cap = cv2.VideoCapture('IMG_8039.MOV')
+cap = cv2.VideoCapture('Test_data\IMG_8039.MOV')
 
 while True:
 	#เริ่มอ่านในแต่ละเฟรม
