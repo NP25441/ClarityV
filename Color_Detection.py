@@ -3,7 +3,7 @@ import cv2
 
 
 # Capturing video through image 
-image = cv2.imread('Test_data\car.png')
+image = cv2.imread('Test_data\car (6).jpg')
 image = cv2.resize(image, (1000, 700))
 rate_area = 1000
 
@@ -19,16 +19,16 @@ v = []
 SHV_Frame = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) 
 
 # สีแดง --
-red_lower = np.array([136, 87, 111], np.uint8) 
-red_upper = np.array([180, 255, 255], np.uint8) 
+red_lower = np.array([160,0,0], np.uint8) 
+red_upper = np.array([179,255,255], np.uint8) 
 red_mask = cv2.inRange(SHV_Frame, red_lower, red_upper)
 # สีน้ำเงิน --
-blue_lower = np.array([150, 52, 72], np.uint8) 
-blue_upper = np.array([190, 255, 255], np.uint8) 
+blue_lower = np.array([75,0,0], np.uint8) 
+blue_upper = np.array([100,255,255], np.uint8) 
 blue_mask = cv2.inRange(SHV_Frame, blue_lower, blue_upper) 
 # สีเหลือง --
-yellow_lower = np.array([30,52,176], np.uint8)
-yellow_upper = np.array([49,255,255], np.uint8)
+yellow_lower = np.array([22,0,0], np.uint8)
+yellow_upper = np.array([38,255,255], np.uint8)
 yellow_mask = cv2.inRange(SHV_Frame, yellow_lower, yellow_upper)
 # สีขาว
 white_lower = np.array([255,0,227], np.uint8)
@@ -39,33 +39,33 @@ black_lower = np.array([0,0,0], np.uint8)
 black_upper = np.array([0,255,33], np.uint8)
 black_mask = cv2.inRange(SHV_Frame, black_lower, black_upper)
 # สีม่วง
-violet_lower= np.array([191, 52, 72], np.uint8)
-violet_upper = np.array([205,255,255], np.uint8)
+violet_lower= np.array([130, 52, 72], np.uint8)
+violet_upper = np.array([160,255,255], np.uint8)
 violet_mask = cv2.inRange(SHV_Frame, violet_lower, violet_upper)
 # สีเขียว --
-green_lower = np.array([50, 52, 72], np.uint8) 
-green_upper = np.array([110, 255, 255], np.uint8) 
+green_lower = np.array([38,0,0], np.uint8) 
+green_upper = np.array([75,255,255], np.uint8) 
 green_mask = cv2.inRange(SHV_Frame, green_lower, green_upper) 
 # สีส้ม --
-orange_lower = np.array([15,52,176], np.uint8)
-orange_upper = np.array([29,255,255], np.uint8)
+orange_lower = np.array([0,52,176], np.uint8)
+orange_upper = np.array([22,255,255], np.uint8)
 orange_mask = cv2.inRange(SHV_Frame, orange_lower, orange_upper)
 # สีน้ำตาล
 brown_lower = np.array([24,255,255], np.uint8)
 brown_upper = np.array([35,255,151], np.uint8)
 brown_mask = cv2.inRange(SHV_Frame, brown_lower, brown_upper)
 # สีชมพู
-pink_lower = np.array([206,52, 72], np.uint8)
-pimk_upper = np.array([231,255,255], np.uint8)
-pink_mask = cv2.inRange(SHV_Frame, pink_lower, pimk_upper)
+pink_lower = np.array([111, 52, 72], np.uint8)
+pink_upper = np.array([149, 255, 255], np.uint8)
+pink_mask = cv2.inRange(SHV_Frame, pink_lower, pink_upper)
 # สีเทา
 gray_lower = np.array([0,0,226], np.uint8)
 gray_upper = np.array([255,255,107], np.uint8)
 gray_mask = cv2.inRange(SHV_Frame, gray_lower, gray_upper)
 # สีฟ้า
-light_blue_lower = np.array([111, 52, 72], np.uint8) 
-light_blue_upper = np.array([149, 255, 255], np.uint8)
-light_blue_mask = cv2.inRange(SHV_Frame, light_blue_lower, light_blue_upper) 
+light_blue_lower = np.array([100, 52, 72], np.uint8) 
+light_blue_upper = np.array([130, 255, 255], np.uint8)
+light_blue_mask = cv2.inRange(SHV_Frame, light_blue_lower, light_blue_upper)
 
 
 # Morphological Transform, Dilation 
