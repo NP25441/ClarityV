@@ -22,7 +22,7 @@ from Color import * # ทดสอบผ่านแล้ว
 # blender_4 = Image.blend(image5,blender_3,0.2)
 # blender_5 = Image.blend(image6,blender_4,0.2)
 
-img = 'Test_data\car (8).png'
+img = 'Test_data\car (11).png'
 
 # # blender_5.save("Test_data\image.jpg")
 
