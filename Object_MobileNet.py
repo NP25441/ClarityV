@@ -25,7 +25,7 @@ while True:
 		#feedเข้าmodelพร้อมได้ผลลัพธ์ทั้งหมดเก็บมาในตัวแปร detections
 		detections = net.forward()
 
-		for i in np.arange(0, detections.shape[2]):
+		for i in np.arange(0, detections.shape[1]):
 			percent = detections[0,0,i,2]
 			#กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
 			if percent > 0.5:
