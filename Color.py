@@ -3,11 +3,11 @@ import cv2
 
 
 class Color_Detect:
-    def __inf__ (self):
+    def __init__ (self):
         pass
     
     def color_detect(self,img):
-        image = cv2.imread(img)
+        image = img
         image = cv2.resize(image, (1000, 700))
         rate_area = 1000
         

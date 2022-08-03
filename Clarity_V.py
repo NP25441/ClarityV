@@ -4,6 +4,7 @@
 from Tesseract import * # ยังไม่สมบูรณ์
 from Color import * # ทดสอบผ่านแล้ว
 # # from Merge_Image import *
+from Type_Car import *
 # import cv2
 
 # from Color import *
@@ -22,14 +23,15 @@ from Color import * # ทดสอบผ่านแล้ว
 # blender_4 = Image.blend(image5,blender_3,0.2)
 # blender_5 = Image.blend(image6,blender_4,0.2)
 
-img = 'Test_data\car (11).png'
-
+img = cv2.imread('Test_data\y-r46.jpg')
 # # blender_5.save("Test_data\image.jpg")
 
 # #เรียกใช้ฟังก์ชัน
-ocr_plate = Tessract_Detect()
+type_car = Type_Car_Model()
+# ocr_plate = Tessract_Detect()
 color_car = Color_Detect()
 
-# #
-ocr_plate.tessract_detect(img)
+# 
+type_car.type_car_model(img)
+# ocr_plate.tessract_detect(img)
 color_car.color_detect(img)

@@ -11,7 +11,7 @@ import os
 
 class Tessract_Detect:
       
-      def __inf__ (self):
+      def __init__ (self):
             pass
       
       
@@ -44,7 +44,7 @@ class Tessract_Detect:
       
       def tessract_detect(self,img):
             #กระบวนการทำงานของ CV2
-            img = cv2.imread(img) #นำเข้ารูปภาพ
+            img = img #นำเข้ารูปภาพ
             img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
             gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
@@ -110,8 +110,8 @@ class Tessract_Detect:
             text_city = text_city.split('\n')
 
             #ลบการเว้นวรรคที่ไม่ต้องการ
-            # del text_license[1] ,text_license[2]
-            # del text_city[1] ,text_city[2]
+            del text_license[1] ,text_license[2]
+            del text_city[1] ,text_city[2]
 
             #ลบตำแหน่งที่ไม่ต้องการ
             for _i,t1 in enumerate(text_license):
@@ -130,7 +130,7 @@ class Tessract_Detect:
                               
 
             Tessract_Detect.city_Ans.sort(key=Tessract_Detect.myFunc, reverse=True)
-            print(Tessract_Detect.city_Ans) 
+            # print(Tessract_Detect.city_Ans) 
             Tessract_Detect.data_show.append(Tessract_Detect.city_Ans[0])
             city_Ans = []
             
