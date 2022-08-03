@@ -24,14 +24,15 @@ from Type_Car import *
 # blender_5 = Image.blend(image6,blender_4,0.2)
 
 img = cv2.imread('Test_data\y-r46.jpg')
+model_path = 'model_car(VGG16)\car_model.h5'
 # # blender_5.save("Test_data\image.jpg")
 
-# #เรียกใช้ฟังก์ชัน
+# เรียกใช้ class ของตัวเอง
 type_car = Type_Car_Model()
-# ocr_plate = Tessract_Detect()
+ocr_plate = Tessract_Detect()
 color_car = Color_Detect()
 
-# 
-type_car.type_car_model(img)
-# ocr_plate.tessract_detect(img)
+# เรียกใช้ฟังก์ชัน
+type_car.type_car_model(model_path,img)
+ocr_plate.tessract_detect(img)
 color_car.color_detect(img)

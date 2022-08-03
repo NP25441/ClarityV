@@ -3,12 +3,12 @@ import cv2
 import numpy as np
 
 class Type_Car_Model(object):
-    def __inf__ (self):     
+    def __init__ (self):     
         pass
     
     
-    def type_car_model(self,img):
-        model = load_model('model_car(VGG16)\car_model.h5')
+    def type_car_model(self, model_path, img):
+        model = load_model(model_path)
         img = cv2.resize(img, (150, 150))
         img = np.array([img])
         classes = ['รถเก๋ง', 'รถตู้', 'รถกระบะ', 'รถบรรทุก', 'ไม่ใช่รถ']
