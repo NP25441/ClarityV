@@ -285,4 +285,4 @@ class Color_Detect:
         Color_Car = [(k, v) for k, v in Color_Num.items()]
 
         Color_Car.sort(key=myFunc, reverse=True)
-        print("Detected Color is: ",Color_Car[0])
+        print("Detect Color is: ",Color_Car[0])

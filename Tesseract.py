@@ -135,7 +135,7 @@ class Tessract_Detect:
             city_Ans = []
             
             #แสดงข้อมูลที่ได้จากรูปภาพ
-            print("Detected City is: ",Tessract_Detect.data_show)
+            print("Detect City is: ",Tessract_Detect.data_show)
             
 
 #แสดงภาพที่ได้จากการคำนวณ
