@@ -124,7 +124,7 @@ class Car_Detection:
                                 print("Detected_1 : " + str(Car_Detection.detect_line_1))
                                 ret, frame = cap.read()
                                 frame = cv2.rectangle(frame, (startX, startY), (endX, endY), Car_Detection.COLORS[class_index], 2)
-                                frame = frame[y:startY+endY, x:startX+endX]
+                                frame = frame[y:startX+200 + startY+100, x:endX + endY]
                                 cv2.imwrite("Snapshot_Data\Line_1\image_1_%d.jpg" % Car_Detection.count_1, frame)    
                                 print('Saved image ', Car_Detection.count_1)
                                 Car_Detection.count_1 += 1
@@ -139,7 +139,7 @@ class Car_Detection:
                                 print("Detected_2 : "+str(Car_Detection.detect_line_2))
                                 ret, frame = cap.read()
                                 frame = cv2.rectangle(frame, (startX, startY), (endX, endY), Car_Detection.COLORS[class_index], 2)
-                                frame = frame[y:startY+endY, x:startX+endX]
+                                frame = frame[y:(startX, startY), x:(endX, endY)]
                                 cv2.imwrite("Snapshot_Data\Line_2\image_2_%d.jpg" % Car_Detection.count_2, frame)    
                                 print('Saved image ', Car_Detection.count_2)
                                 Car_Detection.count_2 += 1
