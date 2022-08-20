@@ -85,8 +85,8 @@ while True:
 						print("Detected_1 : "+str(detect_line_1))
 						ret, frame = cap.read()
 						frame = cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
-						frame = frame[y:startX, x:endX]
-						cv2.imwrite("test\image_1_%d.jpg" % count_1, frame)    
+						frame = frame[y:startY+endY, x:startX+endX]
+						cv2.imwrite("Snapshot_Data\Line_1\image_1_%d.jpg" % count_1, frame)    
 						print('Saved image ', count_1)
 						count_1 += 1
 						#print(detect_1)
@@ -98,7 +98,10 @@ while True:
 						cv2.line(frame, (300, pos_line_2), (1800, pos_line_2), (0,127,255), 2)  
 						detect_2.remove((x,y))
 						print("Detected_2 : "+str(detect_line_2))
-						cv2.imwrite("test\image_2_%d.jpg" % count_2, frame)    
+						ret, frame = cap.read()
+						frame = cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
+						frame = frame[y:startY+endY, x:startX+endX]
+						cv2.imwrite("Snapshot_Data\Line_2\image_2_%d.jpg" % count_2, frame)    
 						print('Saved image ', count_2)
 						count_2 += 1
 						#print(detect_2)
