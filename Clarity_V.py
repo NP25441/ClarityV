@@ -1,13 +1,11 @@
 #รวมทุกฟังก์ชัน
 # from Object_Detection import *
 # from Object_MobileNet import *
-from Tesseract import * # ยังไม่สมบูรณ์
-from Color import * # ทดสอบผ่านแล้ว
+from Car_Detect import *
+from Color import *
+from Tesseract import * # ทดสอบผ่านแล้ว
 # # from Merge_Image import *
 from Type_Car import *
-# import cv2
-
-# from Color import *
 
 #ตั้งค่าตัวแปร
 # image1 = Image.open("Test_data\car (1).jpg")
@@ -23,16 +21,19 @@ from Type_Car import *
 # blender_4 = Image.blend(image5,blender_3,0.2)
 # blender_5 = Image.blend(image6,blender_4,0.2)
 
+cap = cv2.VideoCapture('Test_data\Video-3.mp4')
 img = cv2.imread('Test_data\y-r46.jpg')
 model_path = 'model_car(VGG16)\car_model.h5'
 # # blender_5.save("Test_data\image.jpg")
 
 # เรียกใช้ class ของตัวเอง
+car_detection = Car_Detection()
 type_car = Type_Car_Model()
 ocr_plate = Tessract_Detect()
 color_car = Color_Detect()
 
 # เรียกใช้ฟังก์ชัน
+car_detection.car_detection(cap)
 type_car.type_car_model(model_path,img)
 ocr_plate.tessract_detect(img)
 color_car.color_detect(img)
