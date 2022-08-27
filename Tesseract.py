@@ -42,9 +42,9 @@ class Tessract_Detect:
       #ตำแหน่งของข้อมูลในเครื่อง
       # path       = "Test_Loop_Tessract"
       
-      def tessract_detect(self,img):
+      def tessract_detect(self,full_path):
             #กระบวนการทำงานของ CV2
-            img = img #นำเข้ารูปภาพ
+            img = cv2.imread(full_path)
             img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
             gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น

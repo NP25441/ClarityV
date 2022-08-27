@@ -6,8 +6,8 @@ class Color_Detect:
     def __init__ (self):
         pass
     
-    def color_detect(self,img):
-        image = img
+    def color_detect(self,full_path):
+        image = cv2.imread(full_path)
         image = cv2.resize(image, (1000, 700))
         rate_area = 1000
         

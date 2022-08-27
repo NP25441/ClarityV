@@ -7,8 +7,9 @@ class Type_Car_Model(object):
         pass
     
     
-    def type_car_model(self, model_path, img):
+    def type_car_model(self, model_path, full_path):
         model = load_model(model_path)
+        img = cv2.imread(full_path)
         img = cv2.resize(img, (150, 150))
         img = np.array([img])
         classes = ['รถเก๋ง', 'รถตู้', 'รถกระบะ', 'รถบรรทุก', 'ไม่ใช่รถ']
