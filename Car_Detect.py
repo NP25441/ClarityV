@@ -81,6 +81,8 @@ class Car_Detection:
     #สีตัวกรอบที่วาดrandomใหม่ทุกครั้ง
     COLORS = np.random.uniform(0,100, size=(len(CLASSES), 3))
     
+    frameTime = 1 # time of each frame in ms, you can add logic to change this value.
+    
     def car_detection(self, cap):
         while True:
             #เริ่มอ่านในแต่ละเฟรม
@@ -125,7 +127,7 @@ class Car_Detection:
                                 ret, frame = cap.read()
                                 frame = cv2.rectangle(frame, (startX, startY), (endX, endY), Car_Detection.COLORS[class_index], 2)
                                 frame = frame[y:startX+200 + startY+100, x:endX + endY]
-                                cv2.imwrite("Snapshot_Data\Line_1\image_1_%d.jpg" % Car_Detection.count_1, frame)    
+                                cv2.imwrite("Snapshot_Data\image_%d.jpg" % Car_Detection.count_1, frame)    
                                 print('Saved image ', Car_Detection.count_1)
                                 Car_Detection.count_1 += 1
                                 #print(detect_1)
@@ -144,10 +146,10 @@ class Car_Detection:
                         #         print('Saved image ', Car_Detection.count_2)
                         #         Car_Detection.count_2 += 1
                         #         #print(detect_2)
-                                
-        #     cv2.imshow("Frame", frame)
-        #     if cv2.waitKey(1) & 0xFF==ord('q'):
-        #         break
+                              
+            cv2.imshow("Frame", frame)
+            if cv2.waitKey(Car_Detection.frameTime) & 0xFF == ord('q'):
+                break
         
         # #หลังเลิกใช้แล้วเคลียร์memoryและปิดกล้อง
         # cap.release()

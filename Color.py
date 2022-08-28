@@ -107,8 +107,6 @@ class Color_Detect:
                 # cv2.putText(image, "Orange Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0))
                 # print("Orange Colour")
                 Color_Detect.append("Orange Colour")
-                
-
 
 
         # แปลงค่าสำหรับสีเหลือง
@@ -237,7 +235,7 @@ class Color_Detect:
                 # cv2.putText(image, "Pink Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Pink Colour")
                 Color_Detect.append("Pink Colour")
-        
+
 
         # แปลงค่าสำหรับสีน้ำตาล
         brown_mask = cv2.dilate(brown_mask, kernal) 
@@ -253,7 +251,7 @@ class Color_Detect:
                 # cv2.putText(image, "Brown Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Brown Colour")
                 Color_Detect.append("Brown Colour")
-        
+
 
         # แปลงค่าสำหรับสีฟ้า
         light_blue_mask = cv2.dilate(light_blue_mask, kernal) 

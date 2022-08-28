@@ -28,7 +28,7 @@ cap = cv2.VideoCapture('Test_data\Video-3.mp4')
 model_path = 'model_car(VGG16)\car_model.h5'
 
 #ตำแหน่งของข้อมูลในเครื่อง
-path       = "Snapshot_Data\Line_1"
+path       = "Snapshot_Data"
 
 # เรียกใช้ class ของตัวเอง
 car_detection = Car_Detection()
