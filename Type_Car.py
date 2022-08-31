@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 class Type_Car_Model(object):
-    def __init__ (self):     
+    def __init__ (self): 
         pass
     
     
@@ -12,8 +12,28 @@ class Type_Car_Model(object):
         img = cv2.imread(full_path)
         img = cv2.resize(img, (150, 150))
         img = np.array([img])
-        classes = ['รถเก๋ง', 'รถตู้', 'รถกระบะ', 'รถบรรทุก', 'ไม่ใช่รถ']
-        print('Detect Type Car : ',classes[np.argmax(model.predict(img))])
+        # classes = ['Sedan', 'Van', 'Pickup', 'Truck', 'Unknown']
+        classes = ['รถเก๋ง', 'รถตู้', 'รถกระบะ', 'รถบรรทุก', 'ไม่ระบุประเภท']
+        type = classes[np.argmax(model.predict(img))]
+        
+        print('Detect Type Car : ',type)
+        
+        # if type == "Unknown":
+        #     type = "ไม่ใช่รถยนต์"
+            
+        # elif type == "Sedan":
+        #     type = "รถเก๋ง"
+            
+        # elif type == "Van":
+        #     type = "รถตู้"
+            
+        # elif type == "Pickup":
+        #     type = "รถกระบะ"
+            
+        # elif type == "Truck":
+        #     type = "รถบรรทุก"
+        
+        return type
         # print("Error: Cannot load model")
         # model.summary()
         # print("Loaded Model from disk")

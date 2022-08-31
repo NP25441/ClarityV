@@ -131,11 +131,14 @@ class Tessract_Detect:
 
             Tessract_Detect.city_Ans.sort(key=Tessract_Detect.myFunc, reverse=True)
             # print(Tessract_Detect.city_Ans) 
-            Tessract_Detect.data_show.append(Tessract_Detect.city_Ans[0])
-            city_Ans = []
+            # Tessract_Detect.data_show.append(Tessract_Detect.city_Ans[0])
+            # city_Ans = []
             
             #แสดงข้อมูลที่ได้จากรูปภาพ
-            print("Detect City is: ",Tessract_Detect.data_show)
+            ocr = Tessract_Detect.city_Ans[0]['ป้ายทะเบียน'],Tessract_Detect.city_Ans[0]['จังหวัด']
+            print("Detect City is: ",ocr)
+            
+            return ocr
             
 
 #แสดงภาพที่ได้จากการคำนวณ

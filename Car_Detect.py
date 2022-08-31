@@ -127,7 +127,7 @@ class Car_Detection:
                                 ret, frame = cap.read()
                                 frame = cv2.rectangle(frame, (startX, startY), (endX, endY), Car_Detection.COLORS[class_index], 2)
                                 frame = frame[y:startX+startY, x:endX + endY]
-                                cv2.imwrite("Snapshot_Data\image_%d.jpg" % Car_Detection.count_1, frame)    
+                                cv2.imwrite("Snapshot_Data\Before\%d.jpg" % Car_Detection.count_1, frame)  
                                 print('Saved image ', Car_Detection.count_1)
                                 Car_Detection.count_1 += 1
                                 #print(detect_1)

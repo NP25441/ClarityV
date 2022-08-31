@@ -35,7 +35,7 @@ def myFunc(e):
 
 
 #กระบวนการทำงานของ CV2
-img = cv2.imread('Test_Loop_Tessract\g-bk0.jpg') #นำเข้ารูปภาพ
+img = cv2.imread('Test_data\y-r46.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
 gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
@@ -64,7 +64,8 @@ for c in cnts:
 
 if screenCnt is None:
       detected = 0
-      print ("No contour detected")
+      # print ("No contour detected")
+      
 else:
       cv2.drawContours(img, [screenCnt], -1, (0, 255, 0), 3)
 
@@ -123,9 +124,9 @@ for _i ,city in enumerate (City_Ref):
 city_Ans.sort(key=myFunc, reverse=True)
 # data_show.append(city_Ans[0])
 # city_Ans = []
-
 #แสดงข้อมูลที่ได้จากรูปภาพ
-print("Detected City is: ",city_Ans)
+print("Detected Plate is: ",city_Ans[0]['ป้ายทะเบียน'])
+print("Detected City is: ",city_Ans[0]['จังหวัด'])
 
 
 
