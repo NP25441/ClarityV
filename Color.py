@@ -284,6 +284,7 @@ class Color_Detect:
 
         Color_Car.sort(key=myFunc, reverse=True)
         color = Color_Car[0]
+        color = color[0]
         print("Detect Color is: ",color)
         
         return color

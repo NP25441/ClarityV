@@ -13,7 +13,7 @@ cap = cv2.VideoCapture('Test_data\Video-3.mp4')
 model_path = 'model_car(VGG16)\car_model.h5'
 
 #ตำแหน่งที่จะเก็บข้อมูล
-path       = "Snapshot_Data\Before"
+path       = "Snapshot-Data"
 
 # เรียกใช้ class ของตัวเอง
 car_detection = Car_Detection()
@@ -28,7 +28,7 @@ try:
 # แสดงค่าที่ Error
 except Exception as e:
     print("Error: Cannot read video file")
-
+index = 1
 #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
 for images in os.listdir(path):
     # ดัก Error แล้วเด้งออกจากโปรแกรม
@@ -68,9 +68,8 @@ for images in os.listdir(path):
                 print("type",type)
                 print("ocr",ocr)
                 print("color",color)
-                print("dfgdfgd",full_path)
-                os.rename (full_path,f'Snapshot_Data\After\{ocr}_{type}_{color}.jpg')
-                
+                os.rename (full_path,f'Snapshot-Data\{index}_{ocr}_{type}_{color}.jpg')
+                index += 1
     
     # แสดงค่าที่ Error            
     except Exception as e:

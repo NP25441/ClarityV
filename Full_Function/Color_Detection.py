@@ -88,7 +88,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Red Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
 		print("Red Colour")
-		Color_Detect.append("Red Colour")
+		Color_Detect.append("สีแดง")
 
 
 # แปลงค่าสำหรับสีส้ม
@@ -104,7 +104,7 @@ for pic, contour in enumerate(contours):
         
         # cv2.putText(image, "Orange Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0))
         print("Orange Colour")
-        Color_Detect.append("Orange Colour")
+        Color_Detect.append("สีส้ม")
         
 
 
@@ -122,7 +122,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Yellow Colour", (x, y), 1.0, (49,255,255))
 		print("Yellow Colour")
-		Color_Detect.append("Yellow Colour")
+		Color_Detect.append("สีเหลือง")
 
 
 # แปลงค่าสำหรับสีเขียว
@@ -138,7 +138,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Green Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0))
 		print("Green Colour")
-		Color_Detect.append("Green Colour")
+		Color_Detect.append("สีเขียว")
 
 
 # แปลงค่าสำหรับสีฟ้า
@@ -154,7 +154,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Blue Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0))
 		print("Blue Colors")
-		Color_Detect.append("Blue Colour")
+		Color_Detect.append("สีน้ำเงิน")
 
 
 # แปลงค่าสำหรับสีม่วง
@@ -170,7 +170,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Violet Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (204,102,255))
 		print("Violet Colour")
-		Color_Detect.append("Violet Colour")
+		Color_Detect.append("สีม่วง")
 
 
 # แปลงค่าสำหรับสีดำ
@@ -186,7 +186,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Black Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
 		print("Black Colour")
-		Color_Detect.append("Black Colour")
+		Color_Detect.append("สีดำ")
 
 
 # แปลงค่าสำหรับสีขาว
@@ -202,7 +202,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "White Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,255))
 		print("White Colour")
-		Color_Detect.append("White Colour")
+		Color_Detect.append("สีขาว")
 
 
 # แปลงค่าสำหรับสีเทา
@@ -218,7 +218,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Gray Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
 		print("Gray Colour")
-		Color_Detect.append("Gray Colour")
+		Color_Detect.append("สีเทา")
 
 
 # แปลงค่าสำหรับสีชมพู
@@ -234,7 +234,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Pink Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
 		print("Pink Colour")
-		Color_Detect.append("Pink Colour")
+		Color_Detect.append("สีชมพู")
  
 
 # แปลงค่าสำหรับสีน้ำตาล
@@ -250,7 +250,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Brown Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
 		print("Brown Colour")
-		Color_Detect.append("Brown Colour")
+		Color_Detect.append("สีน้ำตาล")
  
 
 # แปลงค่าสำหรับสีฟ้า
@@ -266,7 +266,7 @@ for pic, contour in enumerate(contours):
 		
 		# cv2.putText(image, "Light Blue Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (149, 255, 255))
 		print("Light Blue Colour")
-		Color_Detect.append("Light Blue Colour")
+		Color_Detect.append("สีฟ้า")
 
 
 for x in Color_Detect:
@@ -283,14 +283,16 @@ def myFunc(e):
 Color_Car = [(k, v) for k, v in Color_Num.items()]
 
 Color_Car.sort(key=myFunc, reverse=True)
-print(Color_Car[0])
+Color_car = Color_Car[0]
+Color_car = Color_car[0]
+print(Color_car)
 # print(v)
 # print(d)
 # Program Termination 
-cv2.imshow("Multiple Color Detection in Real-TIme", image)
+# cv2.imshow("Multiple Color Detection in Real-TIme", image)
 
-# if cv2.waitKey(10) & 0xFF == ord('q'): 
-# cap.release() 
-# cv2.destroyAllWindows() 
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# # if cv2.waitKey(10) & 0xFF == ord('q'): 
+# # cap.release() 
+# # cv2.destroyAllWindows() 
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
