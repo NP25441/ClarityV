@@ -45,7 +45,7 @@ class Tessract_Detect:
       def tessract_detect(self,full_path):
             #กระบวนการทำงานของ CV2
             img = cv2.imread(full_path)
-            img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
+            img = cv2.resize(img, (200,150) ) #ปรับขนาดรูปภาพ
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
             gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
             edged = cv2.Canny(gray, 30, 200) #สักเอาขอบของรูปภาพผ่าน Filter
@@ -135,10 +135,11 @@ class Tessract_Detect:
             # city_Ans = []
             
             #แสดงข้อมูลที่ได้จากรูปภาพ
-            ocr = Tessract_Detect.city_Ans[0]['ป้ายทะเบียน'],Tessract_Detect.city_Ans[0]['จังหวัด']
-            print("Detect City is: ",ocr)
+            ocr_license_plate = Tessract_Detect.city_Ans[0]['ป้ายทะเบียน']
+            ocr_city_plate = Tessract_Detect.city_Ans[0]['จังหวัด']
+            print("Detect City is: ",ocr_license_plate,ocr_city_plate)
             
-            return ocr
+            return ocr_license_plate,ocr_city_plate
             
 
 #แสดงภาพที่ได้จากการคำนวณ
