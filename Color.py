@@ -13,10 +13,6 @@ class Color_Detect:
         
         Color_Detect = []
         Color_Num = {}
-                
-                
-        # Start a while loop 
-        # ret, image = image.read() 
 
         SHV_Frame = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) 
 

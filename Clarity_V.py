@@ -1,124 +1,206 @@
-#รวมทุกฟังก์ชัน
+#รวมทุกฟังก์ชันที่เรียกใช้
 import json
-from Car_Detect import *
+from Car_Detect import * # ทดสอบผ่านแล้ว
 from Color import * # ทดสอบแล้ว
 from Tesseract import * # ทดสอบผ่านแล้ว
 from Type_Car import * # ทดสอบผ่านแล้ว
+from GDrive import * # ทดสอบผ่านแล้ว
 import os
 import sys
 import requests
 from datetime import datetime,date
 import pytz
 import natsort
+from googleapiclient.http import MediaFileUpload
+from Google import Create_Service
+import pandas as pd
+
+# กำหนดค่าเริ่มต้น
 
 # ตำแหน่ง API
-plate_url = "https://d720-2001-fb1-108-c52a-4408-4534-fe52-ffff.ap.ngrok.io/plates/create"
+plate_url = "https://d720-2001-fb1-108-c52a-4408-4534-fe52-ffff.ap.ngrok.io"
 
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
 
 # กำหนดตำแหน่งของไฟล์วิดีโอ
 cap = cv2.VideoCapture('Test_data\Video-3.mp4')
+
 # กำหนดตำแหน่งของโมเดล
 model_path = 'model_car(VGG16)\car_model.h5'
 
 #ตำแหน่งที่จะเก็บข้อมูล
-path       = "Snapshot-Data"
+path = "Snapshot-Data"
 
-# เรียกใช้ class ของตัวเอง
+
+# เรียกใช้ฟังก์ชันที่เขียนไว้เป็น Class
+# -------------------------------------
+
+# เรียกใช้ class ของ Car_Detect
 car_detection = Car_Detection()
+
+# เรียกใช้ class ของ Type_Car
 type_car = Type_Car_Model()
+
+# เรียกใช้ class ของ Tesseract
 ocr_plate = Tessract_Detect()
+
+# เรียกใช้ class ของ Color
 color_car = Color_Detect()
 
-# ดัก Error แล้วเด้งออกจากโปรแกรม
+# เรียกใช้ class ของ GDrive
+gdrive_img_path = GDrive_Img()
+
+
+# กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
+# -------------------------------------
+
+# ดัก Error ของารอ่านวิดีโอ
 try:
-    # อ่านไฟล์วิดีโอที่ตรวจจับ Detect
+    # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
     car_detection.car_detection(cap)
-# แสดงค่าที่ Error
+    
+# แสดงข้อมูลที่ Error 
 except Exception as e:
-    print("Error: Cannot read video file")
-    
-    
+    print("Error: Read Video ")
+
+
+#  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
 index = 1
+
+# ไว้สำหรับเป็นข้อมูลทั้งหมด เพื่อนำมาเรียงข้อมูลอีกครั้ง
+list_path = []
+
+
+# กระบวนการที่ 2 ของระบบ อ่านตำแหน่งของรูปภาพที่ตรวจจับได้และจัดเก็บใหม่
+# -------------------------------------
+
 #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-list_path = list()
 for images in os.listdir(path):
-    # ดัก Error แล้วเด้งออกจากโปรแกรม
+    # ดัก Error ในการอ่านตำแหน่งของไฟล์
     try:
         #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
         if (images.endswith(".jpg")):
-          
+              
               # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
               full_path = path + "\\" + str(images)
+              
+              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
               list_path.append(full_path)
               
-    # แสดงค่าที่ Error            
+    # แสดงข้อมูลที่ Error             
     except Exception as e:
-      print('Error: Cannot read image file')
+      print('Error: Read Image')
+      
+
+# กระบวนการที่ 3 ของระบบ เรียงลำดับของข้อมูลและเข้าสู่กระบวนการอื่นๆ
+# -------------------------------------
 
 # เรียงลำดับข้อมูลให้ถูกต้องแล้วดึงออกมาทีละค่า
 for _i ,full_path_len in enumerate(natsort.natsorted(list_path)):
               
-  # ดัก Error แล้วเด้งออกจากโปรแกรม
+  # ดัก Error ของการตรวจจับประเภทรถ
   try:
-      #รัน Model Detect Car
+      # เริ่มกระบวนการทำงานของ Model Detect Car
       type = type_car.type_car_model(model_path,full_path_len)
-  # แสดงค่าที่ Error
+      
+  # แสดงข้อมูลที่ Error 
   except Exception as e:
     print("Error: Cannot load model")
   
-  # ดัก Error แล้วเด้งออกจากโปรแกรม
+  
+  # ดัก Error ของการจับ OCR ทะเบียนรถ
   try:
-      #รัน OCR Detect Plate
+      # เริ่มกระบวนการทำงานของ OCR Detect Plate
       ocr_license_plate = ocr_plate.tessract_detect(full_path_len)
-  # แสดงค่าที่ Error
+      
+  # แสดงข้อมูลที่ Error 
   except Exception as e:
     ocr_license_plate = ("Unknown License Plate")
     # print("Error: Detect Plate")
+  
     
-  # ดัก Error แล้วเด้งออกจากโปรแกรม
+  # ดัก Error ของการจับ OCR จังหวัด
   try:
-      #รัน OCR Detect Plate
+      # เริ่มกระบวนการทำงานของ OCR Detect Plate
       ocr_city_plate = ocr_plate.tessract_detect(full_path_len)
-  # แสดงค่าที่ Error
+      
+  # แสดงข้อมูลที่ Error 
   except Exception as e:
     ocr_city_plate = ("Unknown City Plate")
-    # print("Error: Detect Plate")
+
   
-  # ดัก Error แล้วเด้งออกจากโปรแกรม  
+  # ดัก Error ของการจับสีรถ
   try:
-      # รัน Detect Color
+      # เริ่มกระบวนการทำงานของ Detect Color
       color = color_car.color_detect(full_path_len)
-  # แสดงค่าที่ Error 
+      
+  # แสดงข้อมูลที่ Error 
   except Exception as e:
     print("Error: Detect Color")
       
   
-  # ตั้งค่าเวลา
-  time_tz = datetime.now(tz)
-  current_time = time_tz.strftime("%H.%M.%S")
-  # ตั้งค่าวันที่
-  date_tz = date.today()
-  current_date = date_tz.strftime("%d.%m.%Y")
+  # ดัก Error ของการตั้งค่าเวลา และ วันที่
+  try:
+    # ตั้งค่าเวลา
+    # กำหนดโซนเวลาและเวลาปัจจุบัน
+    time_tz = datetime.now(tz)
+    # กำหนดรูปแบบเวลา
+    current_time = time_tz.strftime("%H.%M.%S")
+    
+    # ตั้งค่าวันที่
+    # ตั้งค่าวันที่ปัจจุบัน
+    date_tz = date.today()
+    # กำหนดรูปแบบวันที่
+    current_date = date_tz.strftime("%d.%m.%Y")
+      
+  # แสดงข้อมูลที่ Error 
+  except Exception as e:
+    print("Error: Detect Color")
+    
   
-  # แสดงค่าที่ได้ทั้งหมด
-  print("ocr",ocr_license_plate)
-  print("ocr",ocr_city_plate)
-  print("type",type)
-  print("color",color)
-  print("time",current_time)
-  print("date",current_date)
-  # print (img)
+  # กระบวนการที่ 4 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
+  # -------------------------------------
   
   # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
   try:
+    # เปลี่ยนชื่อไฟล์
     os.rename (full_path_len,f'Snapshot-Data\{index}_{ocr_license_plate}_{ocr_city_plate}_{type}_{color}_{current_time}_{current_date}.jpg')
   
-  # แสดงค่าที่ Error 
+  # แสดงข้อมูลที่ Error  
   except Exception as e:
-    print("Error: rename file")
+    print("Error: Rename File")
     
+    
+  # กระบวนการที่ 5 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
+  # -------------------------------------
+    
+  # ดักข้อผิดพลาดอัพโหลดรูปภาพ
+  try:
+    # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
+    img_path = gdrive_img_path.gdrive_img(index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date)
+  
+  # แสดงข้อมูลที่ Error  
+  except Exception as e:
+    print("Error: Google Drive Upload")
+    
+
+  # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
+  
+  # แสดงค่าที่ได้ทั้งหมด
+  print("index: ",index)
+  print("ocr: ",ocr_license_plate)
+  print("ocr: ",ocr_city_plate)
+  print("type: ",type)
+  print("color: ",color)
+  print("time: ",current_time)
+  print("date: ",current_date)
+  print ("path: ",img_path)
+  
+  
+  # กระบวนการที่ 6 ของระบบ รวมข้อมูลทั้งหมดและส่งข้อมูลไป API
+  # -------------------------------------
+  
   # Header ของไฟล์ 
   headers = {'Accept': 'application/json', # รับค่าเป็น json
               'content-type': 'application/json', # ส่งค่าเป็น json
@@ -137,10 +219,11 @@ for _i ,full_path_len in enumerate(natsort.natsorted(list_path)):
   
   # ดักข้อผิดพลาดของ API
   try:
-    
     # ส่งข้อมูลไปยัง API
-    post_detel = requests.post(plate_url,json=detel_car,headers=headers)
+    post_detel = requests.post(plate_url + '/plates/create',json=detel_car,headers=headers)
+    # แสดงสถานะของ API
     print(post_detel.status_code)
+    # แสดงข้อมูลที่ส่ง
     print(post_detel.json())
     
   # แสดงกระบวการที่ผิดพลาด
@@ -149,7 +232,3 @@ for _i ,full_path_len in enumerate(natsort.natsorted(list_path)):
   
   # เพิ่มค่าของลำดับให้ทำงานได้เป็นลำดับที่ถูกต้อง
   index += 1
-  
-  
-  
-  
