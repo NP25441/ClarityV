@@ -11,9 +11,6 @@ import requests
 from datetime import datetime,date
 import pytz
 import natsort
-from googleapiclient.http import MediaFileUpload
-from Google import Create_Service
-import pandas as pd
 
 # กำหนดค่าเริ่มต้น
 
