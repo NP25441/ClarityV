@@ -289,10 +289,10 @@ print(Color_car)
 # print(v)
 # print(d)
 # Program Termination 
-# cv2.imshow("Multiple Color Detection in Real-TIme", image)
+cv2.imshow("Multiple Color Detection in Real-TIme", image)
 
-# # if cv2.waitKey(10) & 0xFF == ord('q'): 
-# # cap.release() 
-# # cv2.destroyAllWindows() 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+# if cv2.waitKey(10) & 0xFF == ord('q'): 
+# cap.release() 
+# cv2.destroyAllWindows() 
+cv2.waitKey(0)
+cv2.destroyAllWindows()

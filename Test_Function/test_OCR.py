@@ -35,7 +35,7 @@ def myFunc(e):
 
 
 #กระบวนการทำงานของ CV2
-img = cv2.imread('Test_data\y-r46.jpg') #นำเข้ารูปภาพ
+img = cv2.imread('Test_data\y-r47.jpg') #นำเข้ารูปภาพ
 img = cv2.resize(img, (620,480) ) #ปรับขนาดรูปภาพ
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #แปลงรูปภาพเป็นเฉพาะสีขาว-ดำ
 gray = cv2.bilateralFilter(gray, 11, 17, 17) #ทำให้รูปภาพเบลอเพื่อแยกสีให้ชัดเจนขึ้น
@@ -131,5 +131,5 @@ print("Detected City is: ",city_Ans[0]['จังหวัด'])
 
 
 #แสดงภาพที่ได้จากการคำนวณ
-#cv2.imshow("Image", Cropped)#แสดงรูปภาพที่ได้จากการทำงาน
-#cv2.waitKey(0)#รอการกดปุ่มเพื่อคืนค่า
+cv2.imshow("Image", Cropped)#แสดงรูปภาพที่ได้จากการทำงาน
+cv2.waitKey(0)#รอการกดปุ่มเพื่อคืนค่า
