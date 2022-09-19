@@ -24,13 +24,19 @@ class GDrive_Img:
     service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES) 
     
     def gdrive_img(self,index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date):
+        if index <= 9 :
+            index_name = f'0{index}'
+            
+        else:
+            index_name = index
+            index = index
         
         # กำหนดชื่อไฟล์
         file_name = f'Snapshot-Data\{index}_{ocr_license_plate}_{ocr_city_plate}_{type}_{color}_{current_time}_{current_date}.jpg'
         
         # อัพโหลดภาพ
         file_metadata = {
-            'name': file_name, # ชื่อไฟล์ที่จะอัพโหลด
+            'name': f'{index_name}', # ชื่อไฟล์ที่จะอัพโหลด
             'parents': ['1GXl9H4o6-u0FEOSq7mAEPqjPyZI2dEQf'] # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
         }
 
@@ -44,7 +50,8 @@ class GDrive_Img:
             fields='id'
         ).execute()
 
-
+        
+        index -= 1
         # ดูข้อมูลในไดร์ฟ
 
         # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
@@ -85,8 +92,3 @@ class GDrive_Img:
         
         # ส่งข้อมูล Path ไปยังฟังก์ชันหลักของระบบ
         return img_path_drive
-
-
-
-
-

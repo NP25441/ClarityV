@@ -12,21 +12,22 @@ SCOPES = ['https://www.googleapis.com/auth/drive'] # สิทธิ์การ
 service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES) # สร้าง Service สำหรับเข้าถึง Google Drive API
 
 file_name = '{index}_{ocr_license_plate}_{ocr_city_plate}_{type}_{color}_{current_time}_{current_date}.jpg'
-# อัพโหลดภาพ
-file_metadata = {
-    'name': '00.png', # ชื่อไฟล์ที่จะอัพโหลด
-    'parents': ['1GXl9H4o6-u0FEOSq7mAEPqjPyZI2dEQf'] # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
-}
 
-# ระบุชนิดของไฟล์ที่จะอัพโหลด
-media = MediaFileUpload('/Snapshot-Data/{file_name}', mimetype='image/jpg') 
+# # อัพโหลดภาพ
+# file_metadata = {
+#     'name': '00.png', # ชื่อไฟล์ที่จะอัพโหลด
+#     'parents': ['1GXl9H4o6-u0FEOSq7mAEPqjPyZI2dEQf'] # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
+# }
 
-# สร้างไฟล์
-service.files().create( 
-    body=file_metadata, 
-    media_body=media,
-    fields='id'
-).execute()
+# # ระบุชนิดของไฟล์ที่จะอัพโหลด
+# media = MediaFileUpload('/Snapshot-Data/{file_name}', mimetype='image/jpg') 
+
+# # สร้างไฟล์
+# service.files().create( 
+#     body=file_metadata, 
+#     media_body=media,
+#     fields='id'
+# ).execute()
 
 
 # ดูข้อมูลในไดร์ฟ
@@ -60,11 +61,13 @@ drive_data = drive_data.reset_index(drop=True)
 
 
 # แสดงข้อมูลแค่เฉพาะ ID ของไฟล์นั้นโดยความคุมลำดับของภาพ
-print(drive_data['id'][index])
+# print(drive_data['id'])
 # รวมข้อมูลกับ Path ที่ใช้ในการแสดงรูปภาพ
-print('https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]) #ข้อมูลพร้อมส่ง api
+# print('https://drive.google.com/uc?export=view&id=' + drive_data['id']) #ข้อมูลพร้อมส่ง api
 
-img_path_drive = 'https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]
+img_path_drive = 'https://drive.google.com/uc?export=view&id=' + drive_data['id']
+
+print(img_path_drive)
 
 
 

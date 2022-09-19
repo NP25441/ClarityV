@@ -15,7 +15,7 @@ import natsort
 # กำหนดค่าเริ่มต้น
 
 # ตำแหน่ง API
-plate_url = "https://d720-2001-fb1-108-c52a-4408-4534-fe52-ffff.ap.ngrok.io"
+plate_url = "https://8615-27-145-28-135.ap.ngrok.io"
 
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
@@ -211,7 +211,7 @@ for _i ,full_path_len in enumerate(natsort.natsorted(list_path)):
             'color': color, # สีรถ
             'time': current_time, # เวลา
             'date': current_date, # วันที่
-            # 'img': img, # ภาพ
+            'img': img_path, # ภาพ
           }
   
   # ดักข้อผิดพลาดของ API
