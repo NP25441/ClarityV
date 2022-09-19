@@ -18,20 +18,20 @@ class Type_Car_Model(object):
         
         print('Detect Type Car : ',type)
         
-        # if type == "Unknown":
-        #     type = "ไม่ใช่รถยนต์"
+        # if type == "ไม่ใช่รถยนต์":
+        #     type_car_img = "https://drive.google.com/uc?export=view&id=1N-V3IQfHfhLSa4Dxb_40rszynGpx2pTA"
             
-        # elif type == "Sedan":
-        #     type = "รถเก๋ง"
+        # elif type == "รถเก๋ง":
+        #     type_car_img = "https://drive.google.com/uc?export=view&id=1yoeilpPSFxteT69EK4coS-jKBfrpIV5s"
             
-        # elif type == "Van":
-        #     type = "รถตู้"
+        # elif type == "รถตู้":
+        #     type_car_img = "https://drive.google.com/uc?export=view&id=1iXM_n23gGIIvLOURVFJDbrGDW3Q1zBsQ"
             
-        # elif type == "Pickup":
-        #     type = "รถกระบะ"
+        # elif type == "รถกระบะ":
+        #     type_car_img = "https://drive.google.com/uc?export=view&id=1ZZNT3KY6vZHHbCJVy_Lq5IIUSc0WVQ-5"
             
-        # elif type == "Truck":
-        #     type = "รถบรรทุก"
+        # elif type == "รถบรรทุก":
+        #     type_car_img = "https://drive.google.com/uc?export=view&id=1zLAy8XqQfOiDpMhEHoyA3m2ieZ06EMKV"
         
         return type
         # print("Error: Cannot load model")

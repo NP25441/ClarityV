@@ -86,7 +86,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Red Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 # print("Red Colour")
-                Color_Detect.append("Red Colour")
+                Color_Detect.append("สีแดง")
 
 
         # แปลงค่าสำหรับสีส้ม
@@ -102,7 +102,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Orange Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0))
                 # print("Orange Colour")
-                Color_Detect.append("Orange Colour")
+                Color_Detect.append("สีส้ม")
 
 
         # แปลงค่าสำหรับสีเหลือง
@@ -118,7 +118,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Yellow Colour", (x, y), 1.0, (49,255,255))
                 # print("Yellow Colour")
-                Color_Detect.append("Yellow Colour")
+                Color_Detect.append("สีเหลือง")
 
 
         # แปลงค่าสำหรับสีเขียว
@@ -134,7 +134,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Green Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0))
                 # print("Green Colour")
-                Color_Detect.append("Green Colour")
+                Color_Detect.append("สีเขียว")
 
 
         # แปลงค่าสำหรับสีฟ้า
@@ -150,7 +150,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Blue Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0))
                 # print("Blue Colors")
-                Color_Detect.append("Blue Colour")
+                Color_Detect.append("สีน้ำเงิน")
 
 
         # แปลงค่าสำหรับสีม่วง
@@ -166,7 +166,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Violet Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (204,102,255))
                 # print("Violet Colour")
-                Color_Detect.append("Violet Colour")
+                Color_Detect.append("สีม่วง")
 
 
         # แปลงค่าสำหรับสีดำ
@@ -182,7 +182,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Black Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Black Colour")
-                Color_Detect.append("Black Colour")
+                Color_Detect.append("สีดำ")
 
 
         # แปลงค่าสำหรับสีขาว
@@ -198,7 +198,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "White Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,255))
                 # print("White Colour")
-                Color_Detect.append("White Colour")
+                Color_Detect.append("สีขาว")
 
 
         # แปลงค่าสำหรับสีเทา
@@ -214,7 +214,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Gray Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Gray Colour")
-                Color_Detect.append("Gray Colour")
+                Color_Detect.append("สีเทา")
 
 
         # แปลงค่าสำหรับสีชมพู
@@ -230,7 +230,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Pink Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Pink Colour")
-                Color_Detect.append("Pink Colour")
+                Color_Detect.append("สีชมพู")
 
 
         # แปลงค่าสำหรับสีน้ำตาล
@@ -246,7 +246,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Brown Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0))
                 # print("Brown Colour")
-                Color_Detect.append("Brown Colour")
+                Color_Detect.append("สีน้ำตาล")
 
 
         # แปลงค่าสำหรับสีฟ้า
@@ -262,7 +262,7 @@ class Color_Detect:
                 
                 # cv2.putText(image, "Light Blue Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (149, 255, 255))
                 # print("Light Blue Colour")
-                Color_Detect.append("Light Blue Colour")
+                Color_Detect.append("สีฟ้า")
 
 
         for x in Color_Detect:

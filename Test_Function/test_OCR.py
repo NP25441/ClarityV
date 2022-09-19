@@ -128,6 +128,15 @@ city_Ans.sort(key=myFunc, reverse=True)
 print("Detected Plate is: ",city_Ans[0]['ป้ายทะเบียน'])
 print("Detected City is: ",city_Ans[0]['จังหวัด'])
 
+  # # ดัก Error ของการจับ OCR จังหวัด
+  # try:
+  #     # เริ่มกระบวนการทำงานของ OCR Detect Plate
+  #     ocr_city_plate = ocr_plate.tessract_detect(full_path_len)
+      
+  # # แสดงข้อมูลที่ Error 
+  # except Exception as e:
+  #   ocr_city_plate = ("Unknown City Plate")
+
 
 
 #แสดงภาพที่ได้จากการคำนวณ

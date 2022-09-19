@@ -135,13 +135,11 @@ class Tessract_Detect:
             # city_Ans = []
             
             #แสดงข้อมูลที่ได้จากรูปภาพ
-            ocr = Tessract_Detect.city_Ans[0]['ป้ายทะเบียน']
+            ocr = Tessract_Detect.city_Ans[0]
+
+            print("Detect City is: ",ocr)
             
-            ocr_license_plate = ocr[0][0]
-            ocr_city_plate = ocr[1]
-            print("Detect City is: ",ocr_license_plate,ocr_city_plate)
-            
-            return ocr_license_plate,ocr_city_plate
+            return ocr
             
 
 #แสดงภาพที่ได้จากการคำนวณ
