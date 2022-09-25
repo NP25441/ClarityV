@@ -3,7 +3,7 @@ import cv2
 
 
 # Capturing video through image 
-image = cv2.imread('Test_data\car (6).jpg')
+image = cv2.imread('Test_data\car (8).png')
 image = cv2.resize(image, (1000, 700))
 rate_area = 1000
 

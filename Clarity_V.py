@@ -15,7 +15,7 @@ import natsort
 # กำหนดค่าเริ่มต้น
 
 # ตำแหน่ง API
-plate_url = "https://4e86-27-145-28-135.ap.ngrok.io"
+plate_url = "https://706c-202-80-249-127.ap.ngrok.io"
 
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
