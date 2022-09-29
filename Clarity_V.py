@@ -210,14 +210,14 @@ try:
     # กระบวนการที่ 5 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
     # -------------------------------------
       
-    # ดักข้อผิดพลาดอัพโหลดรูปภาพ
-    try:
-      # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
-      img_path = gdrive_img_path.gdrive_img(index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date)
+#     # ดักข้อผิดพลาดอัพโหลดรูปภาพ
+#     try:
+#       # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
+#       img_path = gdrive_img_path.gdrive_img(index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date)
     
-    # แสดงข้อมูลที่ Error  
-    except Exception as e:
-      print("Error: Google Drive Upload")
+#     # แสดงข้อมูลที่ Error  
+#     except Exception as e:
+#       print("Error: Google Drive Upload")
       
 
     # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
@@ -253,7 +253,7 @@ try:
               'color_code': color_code, # รหัสสีรถ
               'time': current_time, # เวลา
               'date': current_date, # วันที่
-              'img': img_path, # ภาพ
+            #   'img': img_path, # ภาพ
             }
     
     # ดักข้อผิดพลาดของ API
