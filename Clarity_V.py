@@ -17,14 +17,16 @@ plate_url = "https://706c-202-80-249-127.ap.ngrok.io"
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
 
-# กำหนดตำแหน่งของไฟล์วิดีโอ
-cap = cv2.VideoCapture('Test_data\Video-3.mp4')
-
 # กำหนดตำแหน่งของโมเดล
 model_path = 'model_car(VGG16)\car_model.h5'
 
 #ตำแหน่งที่จะเก็บข้อมูล
-path = "Snapshot_Data"
+path_img = "Snapshot_Data"
+path_video = "Video_Data"
+
+# ไว้สำหรับเป็นข้อมูลทั้งหมด เพื่อนำมาเรียงข้อมูลอีกครั้ง
+list_path_img = []
+list_path_video = []
 
 
 # เรียกใช้ฟังก์ชันที่เขียนไว้เป็น Class
@@ -57,8 +59,20 @@ gdrive_img_path = GDrive_Img()
 
 # ดัก Error ของารอ่านวิดีโอ
 try:
-    # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
-    car_detection.car_detection(cap)
+  #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+  for videos in os.listdir(path_video):
+      #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+      if (videos.endswith(".mp4")):
+              
+              # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
+              full_path_video = path_video + "\\" + str(videos)
+              
+              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
+              list_path_video.append(full_path_video)
+              
+  for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
+        # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
+        car_detection.car_detection(full_path_video_len)
     
 # แสดงข้อมูลที่ Error 
 except Exception as e:
@@ -68,24 +82,21 @@ except Exception as e:
 #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
 index = 1
 
-# ไว้สำหรับเป็นข้อมูลทั้งหมด เพื่อนำมาเรียงข้อมูลอีกครั้ง
-list_path = []
-
 # กระบวนการที่ 2 ของระบบ อ่านตำแหน่งของรูปภาพที่ตรวจจับได้และจัดเก็บใหม่
 # -------------------------------------
 
 #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-for images in os.listdir(path):
+for images in os.listdir(path_img):
     # ดัก Error ในการอ่านตำแหน่งของไฟล์
     try:
         #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
         if (images.endswith(".jpg")):
               
               # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
-              full_path = path + "\\" + str(images)
+              full_path_img = path_img + "\\" + str(images)
               
               # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
-              list_path.append(full_path)
+              list_path_img.append(full_path_img)
               
     # แสดงข้อมูลที่ Error             
     except Exception as e:
@@ -98,7 +109,7 @@ for images in os.listdir(path):
 # ดัก Error ในส่วนของการทำงานระบบหลัก
 try:
   # เรียงลำดับข้อมูลให้ถูกต้องแล้วดึงออกมาทีละค่า
-  for _i ,full_path_img_len in enumerate(natsort.natsorted(list_path)):
+  for _i ,full_path_img_len in enumerate(natsort.natsorted(list_path_img)):
         
         
         # ดัก Error ของการตรวจจับประเภทรถ

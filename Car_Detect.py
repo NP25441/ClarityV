@@ -48,7 +48,10 @@ class Car_Detection:
     
     frameTime = 1 # time of each frame in ms, you can add logic to change this value.
     
-    def car_detection(self, cap):
+    def car_detection(self, full_path):
+        
+        cap = cv2.VideoCapture(full_path)
+        
         while True:
             #เริ่มอ่านในแต่ละเฟรม
             ret, frame = cap.read()
