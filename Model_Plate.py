@@ -6,7 +6,7 @@ from object_detection.builders import model_builder
 from object_detection.utils import config_util
 import cv2 
 import numpy as np
-import easyocr
+# import easyocr
 
 
 # ตำแหน่งของ MOdel และตำแหน่งอื่นๆ
