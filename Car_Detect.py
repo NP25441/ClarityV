@@ -52,6 +52,10 @@ class Car_Detection:
         while True:
             #เริ่มอ่านในแต่ละเฟรม
             ret, frame = cap.read()
+            if not ret:
+                print("exit_Video_Read")
+                break
+            
             if ret:
                 h,w = frame.shape[:2]
                 #ทำpreprocessing
@@ -92,7 +96,7 @@ class Car_Detection:
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
                                 # print(startX,startY,endX,endY)
-                                cv2.imwrite("Snapshot-Data\L1_%d.jpg" % Car_Detection.count_1,frame)  
+                                cv2.imwrite("Snapshot_Data\L1_%d.jpg" % Car_Detection.count_1,frame)  
                                 print('Saved image ', Car_Detection.count_1)
                                 Car_Detection.count_1 += 1
                                 #print(detect_1)
@@ -107,7 +111,7 @@ class Car_Detection:
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
                                 # print(startX,startY,endX,endY)
-                                cv2.imwrite("Snapshot-Data\L2_%d.jpg" % Car_Detection.count_2, frame)    
+                                cv2.imwrite("Snapshot_Data\L2_%d.jpg" % Car_Detection.count_2, frame)    
                                 print('Saved image ', Car_Detection.count_2)
                                 Car_Detection.count_2 += 1
                                 #print(detect_2)
@@ -117,7 +121,7 @@ class Car_Detection:
                 break
         
         # #หลังเลิกใช้แล้วเคลียร์memoryและปิดกล้อง
-        # cap.release()
-        # cv2.destroyAllWindows()
+        cap.release()
+        cv2.destroyAllWindows()
         
 		
