@@ -3,7 +3,8 @@ import os, sys, requests, pytz, natsort, json # ทดสอบผ่านแ�
 from Car_Detect import * # ทดสอบผ่านแล้ว
 from Color import * # ทดสอบผ่านแล้ว
 from Color_Flutter import * # ทดสอบผ่านแล้ว
-from Tesseract import * # ทดสอบผ่านแล้ว
+from EasyOcr import * # ทดสอบผ่านแล้ว
+# from Tesseract import * # ทดสอบผ่านแล้ว # ปิดใช้งานชั่วคราว
 from Type_Car_Model import * # ทดสอบผ่านแล้ว
 from Type_Car_Img import * # ทดสอบผ่านแล้ว
 from GDrive import * # ทดสอบผ่านแล้ว
@@ -18,7 +19,7 @@ plate_url = "https://706c-202-80-249-127.ap.ngrok.io"
 tz = pytz.timezone('Asia/Bangkok')
 
 # กำหนดตำแหน่งของโมเดล
-model_path = 'model_car(VGG16)\car_model.h5'
+model_path = 'model_car(VGG16)\car_model.h5' # ประเภทรถ
 
 #ตำแหน่งที่จะเก็บข้อมูล
 path_img = "Snapshot_Data"
@@ -42,7 +43,10 @@ type_car_model = Type_Car_Model()
 type_car_img = Type_Car_Img()
 
 # เรียกใช้ class ของ Tesseract
-ocr_plate = Tessract_Detect()
+# ocr_plate = Tessract_Detect() # ปิดใช้งานชั่วคราว
+
+# เรียกใช้ class ของ EasyOcr
+model_easyocr = Model_EasyOcr()
 
 # เรียกใช้ class ของ Color
 color_car = Color_Detect()
@@ -57,26 +61,26 @@ gdrive_img_path = GDrive_Img()
 # กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
 # -------------------------------------
 
-# # ดัก Error ของารอ่านวิดีโอ
-# try:
-#   #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-#   for videos in os.listdir(path_video):
-#       #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
-#       if (videos.endswith(".mp4")):
+# ดัก Error ของารอ่านวิดีโอ
+try:
+  #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+  for videos in os.listdir(path_video):
+      #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+      if (videos.endswith(".mp4")):
               
-#               # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
-#               full_path_video = path_video + "\\" + str(videos)
+              # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
+              full_path_video = path_video + "\\" + str(videos)
               
-#               # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
-#               list_path_video.append(full_path_video)
+              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
+              list_path_video.append(full_path_video)
               
-#   for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
-#         # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
-#         car_detection.car_detection(full_path_video_len)
+  for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
+        # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
+        car_detection.car_detection(full_path_video_len)
     
-# # แสดงข้อมูลที่ Error 
-# except Exception as e:
-#     print("Error: Read Video ")
+# แสดงข้อมูลที่ Error 
+except Exception as e:
+    print("Error: Read Video ")
 
 
 #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
@@ -128,9 +132,9 @@ try:
         # ดัก Error ของการจับ OCR ทะเบียนรถ
         try:
             # เริ่มกระบวนการทำงานของ OCR Detect Plate
-            ocr = ocr_plate.tessract_detect(full_path_img_len)
+            ocr = model_easyocr.model_easyocr(full_path_img_len)
             
-            ocr_license_plate = ocr['ป้ายทะเบียน'][0]
+            ocr_license_plate = ocr['ป้ายทะเบียน']
             ocr_city_plate = ocr['จังหวัด']
             
             

@@ -7,6 +7,30 @@ from object_detection.utils import config_util
 import cv2 
 import numpy as np
 import easyocr
+import difflib
+
+#List ข้อมูลจังหวัด
+City_Ref = ['เชียงราย', 'เชียงใหม่', 'น่าน', 'พะเยา', 'แพร่', 'แม่ฮ่องสอน', 'ลำปาง', 'ลำพูน', 'อุตรดิตถ์', 'กาฬสินธุ์', 'ขอนแก่น', 'ชัยภูมิ', 'นครพนม', 'นครราชสีมา', 'บึงกาฬ', 'บุรีรัมย์', 'มหาสารคาม', 'มุกดาหาร',
+    'ยโสธร', 'ร้อยเอ็ด', 'เลย', 'สกลนคร', 'สุรินทร์', 'ศรีสะเกษ', 'หนองคาย', 'หนองบัวลำภู', 'อุดรธานี', 'อุบลราชธานี', 'อำนาจเจริญ', 'กำแพงเพชร', 'ชัยนาท', 'นครนายก', 'นครปฐม', 'นครสวรรค์', 'นนทบุรี',
+    'ปทุมธานี', 'พระนครศรีอยุธยา', 'พิจิตร', 'พิษณุโลก', 'เพชรบูรณ์', 'ลพบุรี', 'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สิงห์บุรี', 'สุโขทัย', 'สุพรรณบุรี', 'สระบุรี', 'อ่างทอง', 'อุทัยธานี', 'จันทบุรี', 'ฉะเชิงเทรา',
+    'ชลบุรี', 'ตราด', 'ปราจีนบุรี', 'ระยอง', 'สระแก้ว', 'กาญจนบุรี', 'ตาก', 'ประจวบคีรีขันธ์', 'เพชรบุรี', 'ราชบุรี', 'กระบี่', 'ชุมพร', 'ตรัง', 'นครศรีธรรมราช', 'นราธิวาส', 'ปัตตานี', 'พังงา', 'พัทลุง', 'ภูเก็ต', 'ระนอง', 'สตูล',
+    'สงขลา', 'สุราษฎร์ธานี', 'ยะลา', 'กรุงเทพมหานคร']
+
+#List ข้อมูลความถูกต้องของจังหวัด
+city_Ans = []*len(City_Ref)
+
+#List เก็บข้อมูลทั้งหมดมาแสดงผล
+data_show = []*len(City_Ref)
+
+#เปลี่ยน List เป็น Dict
+def Convert(city_Ans):
+    res_dct = {city_Ans[i]: city_Ans[i + 1] for i in range(0, len(city_Ans), 2)}
+    return res_dct
+
+
+#เรียงลำดับของข้อมูลภายใน List
+def myFunc(e):
+    return e['Acc']
 
 
 # ตำแหน่งของ MOdel และตำแหน่งอื่นๆ
@@ -85,6 +109,18 @@ for idx, box in enumerate(boxes):
     ocr_result = reader.readtext(region)
     print(ocr_result[0][1])
     print(ocr_result[1][1])
+    
+    #ลูปที่ใช้เปรียบเทียบความถูกต้องของข้อความที่ได้จากรูปภาพ
+    for _i ,city in enumerate (City_Ref):
+            seq = difflib.SequenceMatcher(None,ocr_result[1][1],city)
+            Accuracy = seq.ratio()*100
+            if Accuracy >= 30.00:
+                city_Ans.append({'ป้ายทะเบียน':ocr_result[0][1],'จังหวัด':city,'Acc':Accuracy})
+                        
+
+    city_Ans.sort(key=myFunc, reverse=True)
+    
+print(city_Ans)
     
 cv2.imshow('plate',cv2.cvtColor(region,cv2.COLOR_BGR2RGB))
 cv2.waitKey(0)
