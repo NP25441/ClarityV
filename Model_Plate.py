@@ -6,7 +6,7 @@ from object_detection.builders import model_builder
 from object_detection.utils import config_util
 import cv2 
 import numpy as np
-# import easyocr
+import easyocr
 
 
 # ตำแหน่งของ MOdel และตำแหน่งอื่นๆ
@@ -81,9 +81,10 @@ height = img.shape[0]
 for idx, box in enumerate(boxes):
     roi = box*[height,width,height,width]
     region = img[int(roi[0]):int(roi[2]),int(roi[1]):int(roi[3])]
-    # reader = easyocr.Reader(['th'])
-    # ocr_result = reader.readtext(region)
-    # print(ocr_result)
+    reader = easyocr.Reader(['th'])
+    ocr_result = reader.readtext(region)
+    print(ocr_result[0][1])
+    print(ocr_result[1][1])
     
 cv2.imshow('plate',cv2.cvtColor(region,cv2.COLOR_BGR2RGB))
 cv2.waitKey(0)
