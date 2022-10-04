@@ -57,26 +57,26 @@ gdrive_img_path = GDrive_Img()
 # กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
 # -------------------------------------
 
-# ดัก Error ของารอ่านวิดีโอ
-try:
-  #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-  for videos in os.listdir(path_video):
-      #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
-      if (videos.endswith(".mp4")):
+# # ดัก Error ของารอ่านวิดีโอ
+# try:
+#   #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+#   for videos in os.listdir(path_video):
+#       #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+#       if (videos.endswith(".mp4")):
               
-              # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
-              full_path_video = path_video + "\\" + str(videos)
+#               # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
+#               full_path_video = path_video + "\\" + str(videos)
               
-              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
-              list_path_video.append(full_path_video)
+#               # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
+#               list_path_video.append(full_path_video)
               
-  for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
-        # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
-        car_detection.car_detection(full_path_video_len)
+#   for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
+#         # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
+#         car_detection.car_detection(full_path_video_len)
     
-# แสดงข้อมูลที่ Error 
-except Exception as e:
-    print("Error: Read Video ")
+# # แสดงข้อมูลที่ Error 
+# except Exception as e:
+#     print("Error: Read Video ")
 
 
 #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
@@ -178,7 +178,7 @@ try:
         # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
         try:
           # เปลี่ยนชื่อไฟล์
-          os.rename (full_path_img_len,f'Snapshot_Data\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
+          os.rename (full_path_img_len,f'{path_img}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
         
         # แสดงข้อมูลที่ Error  
         except Exception as e:
@@ -188,14 +188,14 @@ try:
         # กระบวนการที่ 5 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
         # -------------------------------------
           
-    #     # ดักข้อผิดพลาดอัพโหลดรูปภาพ
-    #     try:
-    #       # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
-    #       img_path = gdrive_img_path.gdrive_img(index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date)
+        # ดักข้อผิดพลาดอัพโหลดรูปภาพ
+        try:
+          # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
+          img_path = gdrive_img_path.gdrive_img(path_img,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
         
-    #     # แสดงข้อมูลที่ Error  
-    #     except Exception as e:
-    #       print("Error: Google Drive Upload")
+        # แสดงข้อมูลที่ Error  
+        except Exception as e:
+          print("Error: Google Drive Upload")
           
 
         # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
@@ -210,7 +210,7 @@ try:
         print("color_code: ",color_code)
         print("time: ",current_time)
         print("date: ",current_date)
-        # print ("path: ",img_path)
+        print ("path: ",img_path)
         
         
         # กระบวนการที่ 6 ของระบบ รวมข้อมูลทั้งหมดและส่งข้อมูลไป API
@@ -231,7 +231,7 @@ try:
                   'color_code': color_code, # รหัสสีรถ
                   'time': current_time, # เวลา
                   'date': current_date, # วันที่
-                #   'img': img_path, # ภาพ
+                  'img': img_path, # ภาพ
                 }
         
         # ดักข้อผิดพลาดของ API

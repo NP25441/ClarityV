@@ -23,7 +23,7 @@ class GDrive_Img:
     # สร้าง Service สำหรับเข้าถึง Google Drive API
     service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES) 
     
-    def gdrive_img(self,index,ocr_license_plate,ocr_city_plate,type,color,current_time,current_date):
+    def gdrive_img(self,path_img,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date):
         if index <= 9 :
             index_name = f'0{index}'
             
@@ -32,7 +32,7 @@ class GDrive_Img:
             index = index
         
         # กำหนดชื่อไฟล์
-        file_name = f'Snapshot-Data\{index}_{ocr_license_plate}_{ocr_city_plate}_{type}_{color}_{current_time}_{current_date}.jpg'
+        file_name = f'{path_img}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg'
         
         # อัพโหลดภาพ
         file_metadata = {
