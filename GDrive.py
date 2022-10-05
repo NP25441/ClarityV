@@ -2,7 +2,7 @@
 from googleapiclient.http import MediaFileUpload
 from Google import Create_Service
 import pandas as pd
-import natsort
+import natsort, os
 
 class GDrive_Img:
     def __init__(self):
@@ -23,7 +23,8 @@ class GDrive_Img:
     # สร้าง Service สำหรับเข้าถึง Google Drive API
     service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES) 
     
-    def gdrive_img(self,path_img,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date):
+    def gdrive_img_car(self,path_img,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date):
+        
         if index <= 9 :
             index_name = f'0{index}'
             
@@ -31,7 +32,7 @@ class GDrive_Img:
             index_name = index
             index = index
         
-        # กำหนดชื่อไฟล์
+        # กำหนดชื่อไฟล์ที่จะอัพโหลด
         file_name = f'{path_img}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg'
         
         # อัพโหลดภาพ
@@ -85,10 +86,82 @@ class GDrive_Img:
         print(drive_data['id'][index])
         
         # รวมข้อมูลกับ Path ที่ใช้ในการแสดงรูปภาพ
-        img_path_drive = 'https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]
+        img_path_drive_car = 'https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]
         
         # แสดงข้อมูล path ของภาพ
-        print(img_path_drive)
+        print(img_path_drive_car)
         
         # ส่งข้อมูล Path ไปยังฟังก์ชันหลักของระบบ
-        return img_path_drive
+        return img_path_drive_car
+    
+    
+    def gdrive_img_plate(self,path_plate,index):
+            
+        if index <= 9 :
+            index_name = f'0{index}'
+            
+        else:
+            index_name = index
+            index = index
+        
+        # กำหนดชื่อไฟล์
+        file_name = f'{path_plate}\{index}.jpg'
+        
+        # อัพโหลดภาพ
+        file_metadata = {
+            'name': f'{index_name}', # ชื่อไฟล์ที่จะอัพโหลด
+            'parents': ['1tOwQsc6mHjZJAsKLIZ3oaRj-bMQ7npvH'] # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
+        }
+
+        # ระบุชนิดของไฟล์ที่จะอัพโหลด
+        media = MediaFileUpload(file_name, mimetype='image/jpg') 
+
+        # สร้างไฟล์
+        GDrive_Img.service.files().create( 
+            body=file_metadata, 
+            media_body=media,
+            fields='id'
+        ).execute()
+
+        
+        index -= 1
+        # ดูข้อมูลในไดร์ฟ
+
+        # ตำแหน่งที่อยู่ของไฟล์ที่จะอัพโหลด
+        query = f"parents = '1tOwQsc6mHjZJAsKLIZ3oaRj-bMQ7npvH'" 
+
+        # ดึงข้อมูลไฟล์ทั้งหมดในไดร์ฟ
+        response = GDrive_Img.service.files().list(q=query).execute()
+
+        # ดึงข้อมูลที่เป็นไฟล์
+        files = response.get('files')
+
+        # ดึงข้อมูลถัดไป
+        nextPageToken = response.get('nextPageToken')
+
+        # แสดงจำนวนและลำดับข้อมูล
+        while nextPageToken:
+            response = GDrive_Img.service.files().list(q=query, pageToken=nextPageToken).execute()
+            files.extend(response.get('files'))
+            nextPageToken = response.get('nextPageToken')
+
+        # สร้างการมองเห็นในรูปแบบของ  Data Frame
+        df = pd.DataFrame(files)
+
+        # ทำการเรียงลำดับข้องข้อมูล โดยอ้างอิงจากชื่อไฟล์
+        drive_data = df.sort_values(by=['name'], axis = 0, ascending=True)
+
+        # เรียงลำดับของตัวเลขใหม่
+        drive_data = drive_data.reset_index(drop=True)
+
+        # แสดงข้อมูลแค่เฉพาะ ID ของไฟล์นั้นโดยความคุมลำดับของภาพ
+        print(drive_data['id'][index])
+        
+        # รวมข้อมูลกับ Path ที่ใช้ในการแสดงรูปภาพ
+        img_path_drive_plate = 'https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]
+        
+        # แสดงข้อมูล path ของภาพ
+        # print(img_path_drive_plate)
+        
+        # ส่งข้อมูล Path ไปยังฟังก์ชันหลักของระบบ
+        return img_path_drive_plate

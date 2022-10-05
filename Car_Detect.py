@@ -98,9 +98,8 @@ class Car_Detection:
                                 print("Detected_1 : " + str(Car_Detection.detect_line_1))
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
-                                # print(startX,startY,endX,endY)
                                 cv2.imwrite("Snapshot_Data\L1_%d.jpg" % Car_Detection.count_1,frame)  
-                                print('Saved image ', Car_Detection.count_1)
+                                # print('Saved image ', Car_Detection.count_1)
                                 Car_Detection.count_1 += 1
                                 #print(detect_1)
                                 
@@ -113,10 +112,10 @@ class Car_Detection:
                                 print("Detected_2 : "+str(Car_Detection.detect_line_2))
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
-                                # print(startX,startY,endX,endY)
-                                cv2.imwrite("Snapshot_Data\L2_%d.jpg" % Car_Detection.count_2, frame)    
-                                print('Saved image ', Car_Detection.count_2)
-                                Car_Detection.count_2 += 1
+                                cv2.imwrite("Snapshot_Data\L1_%d.jpg" % Car_Detection.count_1, frame) 
+                                Car_Detection.count_1 += 1   
+                                # print('Saved image ', Car_Detection.count_2)
+                                # Car_Detection.count_2 += 1
                                 #print(detect_2)
                               
             cv2.imshow("Frame", frame)
