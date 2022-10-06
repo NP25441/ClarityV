@@ -15,4 +15,3 @@ for item in datas:
 
 img.putdata(newData)
 img.save("test_1.png", "PNG")
-print("Successful")
