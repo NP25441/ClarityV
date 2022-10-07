@@ -1,6 +1,6 @@
 #import libraryที่จำเป็น
 import numpy as np 
-import cv2
+import cv2, os
 from PIL import ImageGrab
 
 class Car_Detection:
@@ -32,25 +32,33 @@ class Car_Detection:
     detect_1 = []
     detect_2 = []
     
-    #นับจำนวนของรถที่ตรวจจับได้ในระบบ
-    detect_line_1 = 0
-    detect_line_2 = 0
+
     
     #กำหนดอัตราการผิดพลาดที่น่าเชื่อถือ
     offset= 10
-    
-    #นับจำนวนรูปที่ snapshot ได้
-    count_1 = 1
-    count_2 = 1
     
     #สีตัวกรอบที่วาดrandomใหม่ทุกครั้ง
     COLORS = np.random.uniform(0,100, size=(len(CLASSES), 3))
     
     frameTime = 1 # time of each frame in ms, you can add logic to change this value.
     
-    def car_detection(self, full_path):
+    def car_detection(self, index, full_path):
+        
+        #นับจำนวนของรถที่ตรวจจับได้ในระบบ
+        detect_line_1 = 0
+        detect_line_2 = 0
+        
+        #นับจำนวนรูปที่ snapshot ได้
+        count_1 = 1
+        # count_2 = 1
         
         cap = cv2.VideoCapture(full_path)
+        
+        parent_dir = "Snapshot_Car"
+        
+        mkdir_path = os.path.join(parent_dir, f'{index}')
+        
+        os.mkdir(mkdir_path)
         
         while True:
             #เริ่มอ่านในแต่ละเฟรม
@@ -92,28 +100,28 @@ class Car_Detection:
                         #เส้นตรวจจับที่ 1
                         for (x,y) in Car_Detection.detect_1:
                             if y<(Car_Detection.pos_line_1 + Car_Detection.offset) and y>(Car_Detection.pos_line_1 - Car_Detection.offset):
-                                Car_Detection.detect_line_1 += 1
+                                detect_line_1 += 1
                                 cv2.line(frame, (300, Car_Detection.pos_line_1), (1800, Car_Detection.pos_line_1), (0,127,255), 2)
                                 Car_Detection.detect_1.remove((x,y))
-                                print("Detected_1 : " + str(Car_Detection.detect_line_1))
+                                print("Detected_1 : " + str(detect_line_1))
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
-                                cv2.imwrite("Snapshot_Data\L1_%d.jpg" % Car_Detection.count_1,frame)  
-                                # print('Saved image ', Car_Detection.count_1)
-                                Car_Detection.count_1 += 1
+                                cv2.imwrite(f"{mkdir_path}\L1_%d.jpg" % count_1,frame)  
+                                # print('Saved image ', count_1)
+                                count_1 += 1
                                 #print(detect_1)
                                 
                         #เส้นตรวจจับที่ 2
                         for (x,y) in Car_Detection.detect_2:
                             if y<(Car_Detection.pos_line_2 + Car_Detection.offset) and y>(Car_Detection.pos_line_2 - Car_Detection.offset):
-                                Car_Detection.detect_line_2 += 1
+                                detect_line_2 += 1
                                 cv2.line(frame, (300, Car_Detection.pos_line_2), (1800, Car_Detection.pos_line_2), (0,127,255), 2)  
                                 Car_Detection.detect_2.remove((x,y))
-                                print("Detected_2 : "+str(Car_Detection.detect_line_2))
+                                print("Detected_2 : "+str(detect_line_2))
                                 ret, frame = cap.read()
                                 frame = frame[startY:endY, startX:endX]
-                                cv2.imwrite("Snapshot_Data\L1_%d.jpg" % Car_Detection.count_1, frame) 
-                                Car_Detection.count_1 += 1   
+                                cv2.imwrite(f"{mkdir_path}\L1_%d.jpg" % count_1, frame) 
+                                count_1 += 1   
                                 # print('Saved image ', Car_Detection.count_2)
                                 # Car_Detection.count_2 += 1
                                 #print(detect_2)

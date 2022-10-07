@@ -1,5 +1,5 @@
 #รวมทุกฟังก์ชันที่เรียกใช้
-import os, sys, requests, pytz, natsort, json
+import os ,sys ,requests ,pytz ,natsort ,json
 from Model_Plate import * # ทดสอบผ่านแล้ว
 from Car_Detect import * # ทดสอบผ่านแล้ว
 from Color import * # ทดสอบผ่านแล้ว
@@ -29,6 +29,7 @@ path_video = "Video_Data"
 # ไว้สำหรับเป็นข้อมูลทั้งหมด เพื่อนำมาเรียงข้อมูลอีกครั้ง
 list_path_img = []
 list_path_video = []
+list_path_drive_video =[]
 
 
 # เรียกใช้ฟังก์ชันที่เขียนไว้เป็น Class
@@ -53,56 +54,81 @@ easyocr_plate = EasyOcr_Plate()
 color_car = Color_Detect()
 
 # เรียกใช้ class ของ GDrive
-gdrive_img_path = GDrive_Img()
+gdrive_path = GDrive_Path()
 
 
 # กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
 # ------------------------------------------------------------------------------
 
-# # ดัก Error ของารอ่านวิดีโอ
-# try:
-#   #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-#   for videos in os.listdir(path_video):
-#       #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
-#       if (videos.endswith(".mp4")):
+# ดัก Error ของารอ่านวิดีโอ
+try:
+  #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
+  index = 1
+  
+  # วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+  for videos in os.listdir(path_video):
+      #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+      if (videos.endswith(".mp4")):
               
-#               # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
-#               full_path_video = path_video + "\\" + str(videos)
+              # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
+              full_path_video = path_video + "\\" + str(videos)
               
-#               # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
-#               list_path_video.append(full_path_video)
-              
-#   for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
-#         # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
-#         car_detection.car_detection(full_path_video_len)
+              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
+              list_path_video.append(full_path_video)
+  
+  # เรียงชื่อไฟล์ให้เป็นไปตามลำดับ
+  for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
+        # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
+        car_detection.car_detection(index, full_path_video_len)
+        
+        # ดักข้อผิดพลาดของการ Upload ไฟล์
+        try :
+          # Upload ไฟล์วิดีโอ ไปยัง Google Drive
+          video_path_drive = gdrive_path.gdrive_full_video(full_path_video_len,index)
+
+          list_path_drive_video.append(video_path_drive)
+        
+        # แสดงข้อผิดพลาดของการ Upload ไฟล์
+        except Exception as e:
+          print("Error: upload video to drive")
+        
+        # เพิ่มค่าของ index
+        index += 1
     
-# # แสดงข้อมูลที่ Error 
-# except Exception as e:
-#     print("Error: Read Video ")
+# แสดงข้อมูลที่ Error 
+except Exception as e:
+    print("Error: Read Video ")
 
-
-#  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
-index = 1
 
 # กระบวนการที่ 2 ของระบบ อ่านตำแหน่งของรูปภาพที่ตรวจจับได้และจัดเก็บใหม่
 # ------------------------------------------------------------------------------
 
-#วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-for images in os.listdir(path_img):
-    # ดัก Error ในการอ่านตำแหน่งของไฟล์
-    try:
-        #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
-        if (images.endswith(".jpg")):
-              
-              # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
-              full_path_img = path_img + "\\" + str(images)
-              
-              # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
-              list_path_img.append(full_path_img)
-              
-    # แสดงข้อมูลที่ Error             
-    except Exception as e:
-      print('Error: Read Image')
+#  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
+index = 1
+
+# อ่านชื่อ directory ของรูปภาพที่ตรวจจับได้
+dir_list = os.listdir(path_img)
+
+# จัดลำดับของชื่อ directory ใหม่
+for _i ,full_path_split_video_len in enumerate(natsort.natsorted(dir_list)):
+
+  #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+  for images in os.listdir(f"{path_img}\{full_path_split_video_len}"):
+
+      # ดัก Error ในการอ่านตำแหน่งของไฟล์
+      try:
+          #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
+          if (images.endswith(".jpg")):
+                
+                # ปรับตำแหน่งของไฟล์ภาพให้ถูกต้อง
+                full_path_img = path_img + "\\" + full_path_split_video_len + "\\" + str(images)
+                
+                # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
+                list_path_img.append(full_path_img)
+                
+      # แสดงข้อมูลที่ Error             
+      except Exception as e:
+        print('Error: Read Image')
       
 
 # กระบวนการที่ 3 ของระบบ เรียงลำดับของข้อมูลและเข้าสู่กระบวนการอื่นๆ
@@ -113,7 +139,18 @@ try:
   # เรียงลำดับข้อมูลให้ถูกต้องแล้วดึงออกมาทีละค่า
   for _i ,full_path_img_len in enumerate(natsort.natsorted(list_path_img)):
         
-
+        # แยกชื่อไฟล์ Video 
+        path_index = full_path_img_len.split("\\")
+        
+        # เลือกตำแหน่งที่เป็นชื่อของ Directory
+        path_index = path_index[1]
+        
+        # แปลงค่าของ Directory ให้เป็นตัวเลขและกำหนดให้เแป็นลำดับของ List
+        if path_index != 0:
+              video_index = int(path_index)
+              video_index = video_index - 1
+        
+        
         # ดัก Error ของการตรวจจับประเภทรถ
         try:
             # เริ่มกระบวนการทำงานของ Model Detect Car
@@ -219,7 +256,7 @@ try:
         # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
         try:
           # เปลี่ยนชื่อไฟล์
-          os.rename (full_path_img_len,f'{path_img}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
+          os.rename (full_path_img_len,f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
         
         # แสดงข้อมูลที่ Error  
         except Exception as e:
@@ -232,9 +269,9 @@ try:
         # ดักข้อผิดพลาดอัพโหลดรูปภาพ
         try:
           # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
-          img_path_car = gdrive_img_path.gdrive_img_car(path_img,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
+          img_path_car = gdrive_path.gdrive_img_car(path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
         
-          img_path_plate = gdrive_img_path.gdrive_img_plate(path_plate,index)
+          img_path_plate = gdrive_path.gdrive_img_plate(path_plate,index)
         
         # แสดงข้อมูลที่ Error  
         except Exception as e:
@@ -245,17 +282,18 @@ try:
         
         try:
           # แสดงค่าที่ได้ทั้งหมด
-          print("index: ",index)
-          print("ocr_license: ",ocr_license_plate)
-          print("ocr_city: ",ocr_city_plate)
-          print("type: ",type_model)
-          print("type_car_img: ",type_car_img)
-          print("color: ",color)
-          print("color_code: ",color_code)
-          print("time: ",current_time)
-          print("date: ",current_date)
-          print ("path_img_car: ",img_path_car)
-          print ("path_img_plate: ",img_path_plate)
+          print("index: ", index)
+          print("ocr_license: ", ocr_license_plate)
+          print("ocr_city: ", ocr_city_plate)
+          print("type: ", type_model)
+          print("type_car_img: ", type_car_img)
+          print("color: ", color)
+          print("color_code: ", color_code)
+          print("time: ", current_time)
+          print("date: ", current_date)
+          print ("path_img_car: ", img_path_car)
+          print ("path_img_plate: ", img_path_plate)
+          print("video: ", list_path_drive_video[video_index])
           
         except Exception as e:
           print("Error: Show Data")
@@ -264,27 +302,29 @@ try:
         # กระบวนการที่ 6 ของระบบ รวมข้อมูลทั้งหมดและส่งข้อมูลไป API
         # ------------------------------------------------------------------------------
         
-        # Header ของไฟล์ 
-        headers = {'Accept': 'application/json', # รับค่าเป็น json
-                    'content-type': 'application/json', # ส่งค่าเป็น json
-                    'Access-Control_Allow_Origin': '*'} # ส่งค่าไปที่ทุกๆที่
-        
-        # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
-        detel_car = { 'id': index, # รหัสรถ
-                  'license_plate': ocr_license_plate, # ทะเบียนรถ
-                  'city': ocr_city_plate, # จังหวัด
-                  'vehicle':type, # ประเภทรถ
-                  'car_img_type':type_car_img, # ประเภทรูปภาพ
-                  'color': color, # สีรถ
-                  'color_code': color_code, # รหัสสีรถ
-                  'time': current_time, # เวลา
-                  'date': current_date, # วันที่
-                  'img_car': img_path_car, # ภาพรถ
-                  'img_plate': img_path_plate, # ภาพป้ายทะเบียน
-                }
         
         # ดักข้อผิดพลาดของ API
         try:
+          # Header ของไฟล์ 
+          headers = {'Accept': 'application/json', # รับค่าเป็น json
+                      'content-type': 'application/json', # ส่งค่าเป็น json
+                      'Access-Control_Allow_Origin': '*'} # ส่งค่าไปที่ทุกๆที่
+          
+          # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
+          detel_car = { 'id': index, # รหัสรถ
+                    'license_plate': ocr_license_plate, # ทะเบียนรถ
+                    'city': ocr_city_plate, # จังหวัด
+                    'vehicle':type, # ประเภทรถ
+                    'car_img_type':type_car_img, # ประเภทรูปภาพ
+                    'color': color, # สีรถ
+                    'color_code': color_code, # รหัสสีรถ
+                    'time': current_time, # เวลา
+                    'date': current_date, # วันที่
+                    'img_car': img_path_car, # ภาพรถ
+                    'img_plate': img_path_plate, # ภาพป้ายทะเบียน
+                    'video': list_path_drive_video[video_index], # วิดีโอ
+                  }
+          
           # ส่งข้อมูลไปยัง API
           post_detel = requests.post(plate_url + '/plates/creates',json=detel_car,headers=headers)
           # แสดงสถานะของ API
@@ -299,5 +339,6 @@ try:
         # เพิ่มค่าของลำดับให้ทำงานได้เป็นลำดับที่ถูกต้อง
         index += 1
 
+# แสดงข้อมูลที่ทำงานผิดพลาด
 except Exception as e:
   print("Error: Main")

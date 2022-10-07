@@ -1,6 +1,5 @@
 #Library ที่เรียกใช้
-import pytesseract
-import difflib
+import pytesseract, difflib
 
 
 class Tessract_Detect:
