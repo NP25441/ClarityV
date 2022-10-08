@@ -22,9 +22,16 @@ class GDrive_Path:
     # สร้าง Service สำหรับเข้าถึง Google Drive API
     service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES) 
     
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
     def gdrive_img_car(self,path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date):
         
         if index <= 9 :
+            index_name = f'00{index}'
+            
+        elif index >= 10 :
             index_name = f'0{index}'
             
         else:
@@ -94,12 +101,15 @@ class GDrive_Path:
         return img_path_drive_car
     
     
-    # ------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
     
     
     def gdrive_img_plate(self,path_plate,index):
             
         if index <= 9 :
+            index_name = f'00{index}'
+            
+        elif index >= 10 :
             index_name = f'0{index}'
             
         else:
@@ -169,12 +179,15 @@ class GDrive_Path:
         return img_path_drive_plate
     
     
-    # ------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
     
     
     def gdrive_full_video(self,full_path_video_len,index):
             
         if index <= 9 :
+            index_name = f'00{index}'
+            
+        elif index >= 10 :
             index_name = f'0{index}'
             
         else:
@@ -230,6 +243,8 @@ class GDrive_Path:
 
         # เรียงลำดับของตัวเลขใหม่
         drive_data = drive_data.reset_index(drop=True)
+        
+        print(drive_data)
 
         # แสดงข้อมูลแค่เฉพาะ ID ของไฟล์นั้นโดยความคุมลำดับของภาพ
         # print(drive_data['id'][index])

@@ -8,6 +8,10 @@ class Car_Detection:
     def __init__(self):
         pass
     
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
     #รายชื่อหมวดหมู่ทั้งหมด เรียงตามลำดับ
     CLASSES = ["BACKGROUND", "AEROPLANE", "BICYCLE", "BIRD", "BOAT",
 	"BOTTLE", "BUS", "CAR", "CAT", "CHAIR", "COW", "DININGTABLE",
@@ -41,6 +45,9 @@ class Car_Detection:
     COLORS = np.random.uniform(0,100, size=(len(CLASSES), 3))
     
     frameTime = 1 # time of each frame in ms, you can add logic to change this value.
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
     
     def car_detection(self, index, full_path):
         

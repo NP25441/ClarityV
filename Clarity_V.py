@@ -33,7 +33,7 @@ list_path_drive_video =[]
 
 
 # เรียกใช้ฟังก์ชันที่เขียนไว้เป็น Class
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #  เรียกใช้งาน Class ของ Model_Plate
 model_plate = Model_Plate()
@@ -58,7 +58,7 @@ gdrive_path = GDrive_Path()
 
 
 # กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # ดัก Error ของารอ่านวิดีโอ
 try:
@@ -101,7 +101,7 @@ except Exception as e:
 
 
 # กระบวนการที่ 2 ของระบบ อ่านตำแหน่งของรูปภาพที่ตรวจจับได้และจัดเก็บใหม่
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
 index = 1
@@ -132,7 +132,7 @@ for _i ,full_path_split_video_len in enumerate(natsort.natsorted(dir_list)):
       
 
 # กระบวนการที่ 3 ของระบบ เรียงลำดับของข้อมูลและเข้าสู่กระบวนการอื่นๆ
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # ดัก Error ในส่วนของการทำงานระบบหลัก
 try:
@@ -172,8 +172,11 @@ try:
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           print("Error: plate_img")
+          
+          # กำหนดค่ากรณีที่ไม่พบป้ายทะเบียน
+          plate_img = 'Plate Not Found'
         
-        # ------------------------------------------------------------------------------
+        # -----------------------------------------------------------------------------------------------------------------------------------------------------
         # Tessract
         # # ดัก Error ของการจับ OCR ทะเบียนรถ
         # try:
@@ -194,7 +197,7 @@ try:
         # # แสดงข้อมูลที่ Error 
         # except Exception as e:
         #   ocr_city_plate = ("Unknown License Plate")
-        # ------------------------------------------------------------------------------
+        # -----------------------------------------------------------------------------------------------------------------------------------------------------
         
         # ดัก Error ของการจับ OCR ทะเบียนรถ
         try:
@@ -250,94 +253,104 @@ try:
           print("Error: Detect Color")
         
         
-        # กระบวนการที่ 4 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
-        # ------------------------------------------------------------------------------
-        
-        # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
-        try:
-          # เปลี่ยนชื่อไฟล์
-          os.rename (full_path_img_len,f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
-        
-        # แสดงข้อมูลที่ Error  
-        except Exception as e:
-          print("Error: Rename File")
+        # ตรวจสอบว่ามีข้อมูลที่ถูกต้องหรือไม่
+        if plate_img == 'Plate Not Found' :
+              # คืนค่าข้อมูล
+              index = index
+              # แสดงข้อมูลที่ตรวจสอบผิดพลาด
+              print("Plate Not Found")
+              
+        else:
+              # ทำงานต่อหากไม่พบข้อผิดพลาดในระบบ
+              
+              # กระบวนการที่ 4 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
+              # -----------------------------------------------------------------------------------------------------------------------------------------------------
+              
+              # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
+              try:
+                # เปลี่ยนชื่อไฟล์
+                os.rename (full_path_img_len,f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
+              
+              # แสดงข้อมูลที่ Error  
+              except Exception as e:
+                print("Error: Rename File")
 
 
-        # กระบวนการที่ 5 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
-        # ------------------------------------------------------------------------------
+              # กระบวนการที่ 5 ของระบบ เปลี่ยื่อไฟล์ให้ถูกต้องตรงกับข้อมูลที่ได้จากการตรวจจับ
+              # -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-        # ดักข้อผิดพลาดอัพโหลดรูปภาพ
-        try:
-          # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
-          img_path_car = gdrive_path.gdrive_img_car(path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
-        
-          img_path_plate = gdrive_path.gdrive_img_plate(path_plate,index)
-        
-        # แสดงข้อมูลที่ Error  
-        except Exception as e:
-          print("Error: Google Drive Upload")
+              # ดักข้อผิดพลาดอัพโหลดรูปภาพ
+              try:
+                # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
+                img_path_car = gdrive_path.gdrive_img_car(path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
+              
+                img_path_plate = gdrive_path.gdrive_img_plate(path_plate,index)
+              
+              # แสดงข้อมูลที่ Error  
+              except Exception as e:
+                print("Error: Google Drive Upload")
 
 
-        # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
-        
-        try:
-          # แสดงค่าที่ได้ทั้งหมด
-          print("index: ", index)
-          print("ocr_license: ", ocr_license_plate)
-          print("ocr_city: ", ocr_city_plate)
-          print("type: ", type_model)
-          print("type_car_img: ", type_car_img)
-          print("color: ", color)
-          print("color_code: ", color_code)
-          print("time: ", current_time)
-          print("date: ", current_date)
-          print ("path_img_car: ", img_path_car)
-          print ("path_img_plate: ", img_path_plate)
-          print("video: ", list_path_drive_video[video_index])
-          
-        except Exception as e:
-          print("Error: Show Data")
-        
-        
-        # กระบวนการที่ 6 ของระบบ รวมข้อมูลทั้งหมดและส่งข้อมูลไป API
-        # ------------------------------------------------------------------------------
-        
-        
-        # ดักข้อผิดพลาดของ API
-        try:
-          # Header ของไฟล์ 
-          headers = {'Accept': 'application/json', # รับค่าเป็น json
-                      'content-type': 'application/json', # ส่งค่าเป็น json
-                      'Access-Control_Allow_Origin': '*'} # ส่งค่าไปที่ทุกๆที่
-          
-          # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
-          detel_car = { 'id': index, # รหัสรถ
-                    'license_plate': ocr_license_plate, # ทะเบียนรถ
-                    'city': ocr_city_plate, # จังหวัด
-                    'vehicle':type, # ประเภทรถ
-                    'car_img_type':type_car_img, # ประเภทรูปภาพ
-                    'color': color, # สีรถ
-                    'color_code': color_code, # รหัสสีรถ
-                    'time': current_time, # เวลา
-                    'date': current_date, # วันที่
-                    'img_car': img_path_car, # ภาพรถ
-                    'img_plate': img_path_plate, # ภาพป้ายทะเบียน
-                    'video': list_path_drive_video[video_index], # วิดีโอ
-                  }
-          
-          # ส่งข้อมูลไปยัง API
-          post_detel = requests.post(plate_url + '/plates/creates',json=detel_car,headers=headers)
-          # แสดงสถานะของ API
-          print(post_detel.status_code)
-          # แสดงข้อมูลที่ส่ง
-          print(post_detel.json())
-          
-        # แสดงกระบวการที่ผิดพลาด
-        except Exception as e:
-          print("Error: API")
-        
-        # เพิ่มค่าของลำดับให้ทำงานได้เป็นลำดับที่ถูกต้อง
-        index += 1
+              # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
+              
+              try:
+                # แสดงค่าที่ได้ทั้งหมด
+                print("index: ", index)
+                print("ocr_license: ", ocr_license_plate)
+                print("ocr_city: ", ocr_city_plate)
+                print("type: ", type_model)
+                print("type_car_img: ", type_car_img)
+                print("color: ", color)
+                print("color_code: ", color_code)
+                print("time: ", current_time)
+                print("date: ", current_date)
+                print ("path_img_car: ", img_path_car)
+                print ("path_img_plate: ", img_path_plate)
+                print("video: ", list_path_drive_video[video_index])
+                
+              except Exception as e:
+                print("Error: Show Data")
+              
+              
+              # กระบวนการที่ 6 ของระบบ รวมข้อมูลทั้งหมดและส่งข้อมูลไป API
+              # -----------------------------------------------------------------------------------------------------------------------------------------------------
+              
+              
+              # ดักข้อผิดพลาดของ API
+              try:
+                # Header ของไฟล์ 
+                headers = {'Accept': 'application/json', # รับค่าเป็น json
+                            'content-type': 'application/json', # ส่งค่าเป็น json
+                            'Access-Control_Allow_Origin': '*'} # ส่งค่าไปที่ทุกๆที่
+                
+                # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
+                detel_car = { 'id': index, # รหัสรถ
+                          'license_plate': ocr_license_plate, # ทะเบียนรถ
+                          'city': ocr_city_plate, # จังหวัด
+                          'vehicle':type, # ประเภทรถ
+                          'car_img_type':type_car_img, # ประเภทรูปภาพ
+                          'color': color, # สีรถ
+                          'color_code': color_code, # รหัสสีรถ
+                          'time': current_time, # เวลา
+                          'date': current_date, # วันที่
+                          'img_car': img_path_car, # ภาพรถ
+                          'img_plate': img_path_plate, # ภาพป้ายทะเบียน
+                          'video': list_path_drive_video[video_index], # วิดีโอ
+                        }
+                
+                # ส่งข้อมูลไปยัง API
+                post_detel = requests.post(plate_url + '/plates/creates',json=detel_car,headers=headers)
+                # แสดงสถานะของ API
+                print(post_detel.status_code)
+                # แสดงข้อมูลที่ส่ง
+                print(post_detel.json())
+                
+              # แสดงกระบวการที่ผิดพลาด
+              except Exception as e:
+                print("Error: API")
+              
+              # เพิ่มค่าของลำดับให้ทำงานได้เป็นลำดับที่ถูกต้อง
+              index += 1
 
 # แสดงข้อมูลที่ทำงานผิดพลาด
 except Exception as e:

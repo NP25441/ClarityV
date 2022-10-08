@@ -3,7 +3,7 @@ import cv2
 
 
 # Capturing video through image 
-image = cv2.imread('Test_data\car (8).png')
+image = cv2.imread('Test_data\car (6).png')
 image = cv2.resize(image, (1000, 700))
 rate_area = 1000
 
@@ -152,6 +152,7 @@ for pic, contour in enumerate(contours):
 		x, y, w, h = cv2.boundingRect(contour) 
 		SHV_Frame = cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2) 
 		
+		print(x,y,w,h)
 		# cv2.putText(image, "Blue Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0))
 		print("Blue Colors")
 		Color_Detect.append("สีน้ำเงิน")

@@ -9,6 +9,10 @@ import numpy as np
 class Model_Plate:
     def __init__ (self):
         pass
+    
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
 
     # ตำแหน่งของ MOdel และตำแหน่งอื่นๆ
     paths = {
@@ -35,6 +39,10 @@ class Model_Plate:
 
     # เรียกใช้งาน label map
     category_index = label_map_util.create_category_index_from_labelmap(paths['LABELMAP'])
+    
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
     
     def model_plate(self,index,full_path_img_len):
 

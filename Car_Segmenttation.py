@@ -7,6 +7,9 @@ class Car_Segmanttation:
     def __init__ (self):
         pass
     
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
     def car_segment(self, index, full_path_img_len):
         
         # โหลด Model ที่เราจะใช้
@@ -65,6 +68,9 @@ class Car_Segmanttation:
 
         # save รูปภาพ
         cv2.imwrite("test.png", test)
+    
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
     def transpatent_segmenttation(self, index, full_path_img_len):
