@@ -244,7 +244,7 @@ class GDrive_Path:
         # เรียงลำดับของตัวเลขใหม่
         drive_data = drive_data.reset_index(drop=True)
         
-        print(drive_data)
+        # print(drive_data)
 
         # แสดงข้อมูลแค่เฉพาะ ID ของไฟล์นั้นโดยความคุมลำดับของภาพ
         # print(drive_data['id'][index])
