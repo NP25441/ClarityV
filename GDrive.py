@@ -26,7 +26,7 @@ class GDrive_Path:
     # -----------------------------------------------------------------------------------------------------------------------------------------------------
     
     
-    def gdrive_img_car(self,path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date):
+    def gdrive_img_car(self,path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color):
         
         if index <= 9 :
             index_name = f'00{index}'
@@ -39,7 +39,7 @@ class GDrive_Path:
             index = index
         
         # กำหนดชื่อไฟล์ที่จะอัพโหลด
-        file_name = f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg'
+        file_name = f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}.jpg'
         
         # อัพโหลดภาพ
         file_metadata = {
@@ -250,7 +250,9 @@ class GDrive_Path:
         # print(drive_data['id'][index])
         
         # รวมข้อมูลกับ Path ที่ใช้ในการแสดงรูปภาพ
-        video_path_drive = 'https://drive.google.com/uc?export=view&id=' + drive_data['id'][index]
+        video_path_drive = 'https://drive.google.com/file/d/'+drive_data['id'][index]+'/view'
+        
+        video_path_drive
         
         # แสดงข้อมูล path ของภาพ
         # print(img_path_drive_plate)

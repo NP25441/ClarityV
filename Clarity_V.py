@@ -4,16 +4,17 @@ from Model_Plate import * # ทดสอบผ่านแล้ว
 from Car_Detect import * # ทดสอบผ่านแล้ว
 from Color import * # ทดสอบผ่านแล้ว
 from EasyOcr import * # ทดสอบผ่านแล้ว
-# from TesseractOCR import * # ทดสอบผ่านแล้ว # ปิดใช้งานชั่วคราว
 from Type_Car_Model import * # ทดสอบผ่านแล้ว
 from GDrive import * # ทดสอบผ่านแล้ว
 from datetime import datetime,date
 
+
 # กำหนดค่าเริ่มต้น
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 # ตำแหน่ง API
-plate_url = "https://706c-202-80-249-127.ap.ngrok.io"
+plate_url = "https://d476-2001-fb1-108-52a2-a922-4b37-34f-125.ap.ngrok.io"
 
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
@@ -35,6 +36,7 @@ list_path_drive_video =[]
 # เรียกใช้ฟังก์ชันที่เขียนไว้เป็น Class
 # -----------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 #  เรียกใช้งาน Class ของ Model_Plate
 model_plate = Model_Plate()
 
@@ -43,9 +45,6 @@ car_detection = Car_Detection()
 
 # เรียกใช้ class ของ Type_Car_Model
 type_car_model = Type_Car_Model()
-
-# เรียกใช้ class ของ Tesseract
-# ocr_plate = Tessract_Detect() # ปิดใช้งานชั่วคราว
 
 # เรียกใช้ class ของ EasyOcr
 easyocr_plate = EasyOcr_Plate()
@@ -60,11 +59,14 @@ gdrive_path = GDrive_Path()
 # กระบวนการที่ 1 ของระบบ อ่านวิดีโอ และ ตรวจจับรถ
 # -----------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 # ดัก Error ของารอ่านวิดีโอ
 try:
   #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
   index = 1
-  
+
+  sec_time = []
+
   # วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
   for videos in os.listdir(path_video):
       #เช็คว่ามีภาพที่เป็นไฟล์นามสกุล .jpg หรือไม่
@@ -75,11 +77,14 @@ try:
               
               # เพิ่มข้อมูลไฟล์ภาพเข้าไปใน list
               list_path_video.append(full_path_video)
-  
+
+
   # เรียงชื่อไฟล์ให้เป็นไปตามลำดับ
   for _i ,full_path_video_len in enumerate(natsort.natsorted(list_path_video)):
         # อ่านไฟล์วิดีโอ โดยใช้ Model ของ MobileNet
-        car_detection.car_detection(index, full_path_video_len)
+
+        time_video = car_detection.car_detection(index, full_path_video_len)
+        sec_time.append(time_video)
         
         # ดักข้อผิดพลาดของการ Upload ไฟล์
         try :
@@ -87,6 +92,8 @@ try:
           video_path_drive = gdrive_path.gdrive_full_video(full_path_video_len,index)
 
           list_path_drive_video.append(video_path_drive)
+          
+          print(list_path_drive_video)
         
         # แสดงข้อผิดพลาดของการ Upload ไฟล์
         except Exception as e:
@@ -94,26 +101,44 @@ try:
         
         # เพิ่มค่าของ index
         index += 1
-    
+
+
 # แสดงข้อมูลที่ Error 
 except Exception as e:
-    print("Error: Read Video ")
+    print("Error: Video not found")
 
 
 # กระบวนการที่ 2 ของระบบ อ่านตำแหน่งของรูปภาพที่ตรวจจับได้และจัดเก็บใหม่
 # -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-#  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
-index = 1
 
-# อ่านชื่อ directory ของรูปภาพที่ตรวจจับได้
-dir_list = os.listdir(path_img)
+# จัดการวินาทีที่ตรวจจับได้ของวิดีโอ
+try:
+  # ค่าเริ่มต้นของลำดับ
+  sec_time_over_len = []
+  
+  for _i ,sec_time_list in enumerate(sec_time):
+        for _i ,sec_time_list_len in enumerate(sec_time_list):
+              sec_time_over_len.append(sec_time_list_len)
 
-# จัดลำดับของชื่อ directory ใหม่
-for _i ,full_path_split_video_len in enumerate(natsort.natsorted(dir_list)):
+# แสดงข้อมูลที่ Error 
+except Exception as e:
+    print("Error: Len Sec Video")
 
-  #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
-  for images in os.listdir(f"{path_img}\{full_path_split_video_len}"):
+
+try:
+  #  ตั้งค่าเริ่มต้นในการไล่ลำดับของการนับข้อมูล
+  index = 1
+  sec_time_index = 0
+
+  # อ่านชื่อ directory ของรูปภาพที่ตรวจจับได้
+  dir_list = os.listdir(path_img)
+
+  # จัดลำดับของชื่อ directory ใหม่
+  for _i ,full_path_split_video_len in enumerate(natsort.natsorted(dir_list)):
+
+    #วนลูปในไฟล์ของตำแหน่งที่ตั้งไหล์
+    for images in os.listdir(f"{path_img}\{full_path_split_video_len}"):
 
       # ดัก Error ในการอ่านตำแหน่งของไฟล์
       try:
@@ -129,16 +154,17 @@ for _i ,full_path_split_video_len in enumerate(natsort.natsorted(dir_list)):
       # แสดงข้อมูลที่ Error             
       except Exception as e:
         print('Error: Read Image')
-      
 
-# กระบวนการที่ 3 ของระบบ เรียงลำดับของข้อมูลและเข้าสู่กระบวนการอื่นๆ
-# -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-# ดัก Error ในส่วนของการทำงานระบบหลัก
-try:
-  # เรียงลำดับข้อมูลให้ถูกต้องแล้วดึงออกมาทีละค่า
-  for _i ,full_path_img_len in enumerate(natsort.natsorted(list_path_img)):
-        
+    # กระบวนการที่ 3 ของระบบ เรียงลำดับของข้อมูลและเข้าสู่กระบวนการอื่นๆ
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    # ดัก Error ในส่วนของการทำงานระบบหลัก
+    try:
+      # เรียงลำดับข้อมูลให้ถูกต้องแล้วดึงออกมาทีละค่า
+      for _i ,full_path_img_len in enumerate(natsort.natsorted(list_path_img)):
+          
         # แยกชื่อไฟล์ Video 
         path_index = full_path_img_len.split("\\")
         
@@ -158,11 +184,11 @@ try:
             
             # ตรวจสอบประเภทของรถ เพื่อส่ง Path ของรูปภาพไปแสดงผล Frontend
             type_car_img = type_car_model.type_car_img(type_model)
-            
+        
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           print("Error: Cannot load model")
-          
+        
         
         # ดัก Error ของการตรวจจับประเภทรถ
         try:
@@ -176,51 +202,29 @@ try:
           # กำหนดค่ากรณีที่ไม่พบป้ายทะเบียน
           plate_img = 'Plate Not Found'
         
-        # # -----------------------------------------------------------------------------------------------------------------------------------------------------
-        # # Tessract
-        # # ดัก Error ของการจับ OCR ทะเบียนรถ
-        # try:
-        #     # เริ่มกระบวนการทำงานของ OCR Detect Plate
-        #     ocr_license_plate = ocr_plate.tessract_license(plate_img)
-            
-        # # แสดงข้อมูลที่ Error 
-        # except Exception as e:
-        #   ocr_license_plate = ("Unknown License Plate")
-          
-        # # ดัก Error ของการจับ OCR ทะเบียนรถ
-        # try:
-        #     # เริ่มกระบวนการทำงานของ OCR Detect Plate
-        #     ocr_city_plate = ocr_plate.tessract_city(plate_img)
-            
-        #     ocr_city_plate = ocr_city_plate['จังหวัด']
-            
-        # # แสดงข้อมูลที่ Error 
-        # except Exception as e:
-        #   ocr_city_plate = ("Unknown License Plate")
-        # # -----------------------------------------------------------------------------------------------------------------------------------------------------
         
         # ดัก Error ของการจับ OCR ทะเบียนรถ
         try:
             # เริ่มกระบวนการทำงานของ OCR Detect Plate
             ocr_license_plate = easyocr_plate.ocr_license_plate(plate_img)
-            
+        
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           ocr_license_plate = ("Unknown License Plate")
-          
-          
+        
+        
         # ดัก Error ของการจับ OCR จังหวัด
         try:
           # เริ่มกระบวนการทำงานของ OCR Detect Plate
           ocr_city_plate = easyocr_plate.ocr_city_plate(plate_img)
           
           ocr_city_plate = ocr_city_plate['จังหวัด']
-            
+        
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           ocr_city_plate = ("Unknown City Plate")
 
-        
+
         # ดัก Error ของการจับสีรถ
         try:
             # เริ่มกระบวนการทำงานของ Detect Color
@@ -228,7 +232,7 @@ try:
             
             # ตรวจสอบสี เพื่อส่ง ค่าสีของไปแสดงในส่วนของ Frontend
             color_code = color_car.color_flutter(color)
-                  
+        
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           print("Error: Detect Color")
@@ -240,14 +244,14 @@ try:
           # กำหนดโซนเวลาและเวลาปัจจุบัน
           time_tz = datetime.now(tz)
           # กำหนดรูปแบบเวลา
-          current_time = time_tz.strftime("%H.%M.%S")
+          current_time = time_tz.strftime("%H/%M/%S")
           
           # ตั้งค่าวันที่
           # ตั้งค่าวันที่ปัจจุบัน
           date_tz = date.today()
           # กำหนดรูปแบบวันที่
-          current_date = date_tz.strftime("%d.%m.%Y")
-            
+          current_date = date_tz.strftime("%d/%m/%Y")
+          
         # แสดงข้อมูลที่ Error 
         except Exception as e:
           print("Error: Detect Color")
@@ -269,7 +273,7 @@ try:
               # ดักข้อผิดพลาดของการเปลี่ยนชื่อไฟล์
               try:
                 # เปลี่ยนชื่อไฟล์
-                os.rename (full_path_img_len,f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}_{current_time}_{current_date}.jpg')
+                os.rename (full_path_img_len,f'{path_img}\{path_index}\{index}_{ocr_license_plate}_{ocr_city_plate}_{type_model}_{color}.jpg')
               
               # แสดงข้อมูลที่ Error  
               except Exception as e:
@@ -282,7 +286,7 @@ try:
               # ดักข้อผิดพลาดอัพโหลดรูปภาพ
               try:
                 # เริ่มกระบวนการทำงานของ Upload Image to Google Drive
-                img_path_car = gdrive_path.gdrive_img_car(path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color,current_time,current_date)
+                img_path_car = gdrive_path.gdrive_img_car(path_img,path_index,index,ocr_license_plate,ocr_city_plate,type_model,color)
               
                 img_path_plate = gdrive_path.gdrive_img_plate(path_plate,index)
               
@@ -306,7 +310,7 @@ try:
                 print("date: ", current_date)
                 print ("path_img_car: ", img_path_car)
                 print ("path_img_plate: ", img_path_plate)
-                print("video: ", list_path_drive_video[video_index])
+                print("video: ", f'{list_path_drive_video[video_index]}?t={sec_time_over_len[sec_time_index]}s')
                 
               except Exception as e:
                 print("Error: Show Data")
@@ -324,18 +328,18 @@ try:
                             'Access-Control_Allow_Origin': '*'} # ส่งค่าไปที่ทุกๆที่
                 
                 # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
-                detel_car = { 'id': index, # รหัสรถ
-                          'license_plate': ocr_license_plate, # ทะเบียนรถ
-                          'city': ocr_city_plate, # จังหวัด
-                          'vehicle':type, # ประเภทรถ
-                          'car_img_type':type_car_img, # ประเภทรูปภาพ
-                          'color': color, # สีรถ
-                          'color_code': color_code, # รหัสสีรถ
-                          'time': current_time, # เวลา
-                          'date': current_date, # วันที่
-                          'img_car': img_path_car, # ภาพรถ
-                          'img_plate': img_path_plate, # ภาพป้ายทะเบียน
-                          'video': list_path_drive_video[video_index], # วิดีโอ
+                detel_car = { 'id': f'{index}', # รหัสรถ
+                          'license_plate': f'{ocr_license_plate}', # ทะเบียนรถ
+                          'city': f'{ocr_city_plate}', # จังหวัด
+                          'vehicle': f'{type_model}', # ประเภทรถ
+                          'car_img_type': f'{type_car_img}', # ประเภทรูปภาพ
+                          'color': f'{color}', # สีรถ
+                          'color_code': f'{color_code}', # รหัสสีรถ
+                          'time': f'{current_time}', # เวลา
+                          'date': f'{current_date}', # วันที่
+                          'img_car': f'{img_path_car}', # ภาพรถ
+                          'img_plate': f'{img_path_plate}', # ภาพป้ายทะเบียน
+                          'video': f'{list_path_drive_video[video_index]}?t={sec_time_over_len[sec_time_index]}s', # วิดีโอ
                         }
                 
                 # ส่งข้อมูลไปยัง API
@@ -351,6 +355,12 @@ try:
               
               # เพิ่มค่าของลำดับให้ทำงานได้เป็นลำดับที่ถูกต้อง
               index += 1
+        sec_time_index += 1
+
+
+    # แสดงข้อมูลที่ทำงานผิดพลาด
+    except Exception as e:
+      print("Error: Status Process")
 
 # แสดงข้อมูลที่ทำงานผิดพลาด
 except Exception as e:
