@@ -126,7 +126,7 @@ class Car_Detection:
                                     sec_time.append(time_jump)
                                     ret, frame = cap.read()
                                     frame = frame[startY:endY, startX:endX]
-                                    cv2.imwrite(f"{mkdir_path}\L1_%d.jpg" % count_1,frame)  
+                                    cv2.imwrite(f"{mkdir_path}\%d.jpg" % count_1,frame)  
                                     count_1 += 1
                             
                             
@@ -142,7 +142,7 @@ class Car_Detection:
                                     sec_time.append(time_jump)
                                     ret, frame = cap.read()
                                     frame = frame[startY:endY, startX:endX]
-                                    cv2.imwrite(f"{mkdir_path}\L1_%d.jpg" % count_1, frame)
+                                    cv2.imwrite(f"{mkdir_path}\%d.jpg" % count_1, frame)
                                     count_1 += 1
                 
                         index_cap_screen = 0

@@ -6,6 +6,7 @@ from Color import * # ทดสอบผ่านแล้ว
 from EasyOcr import * # ทดสอบผ่านแล้ว
 from Type_Car_Model import * # ทดสอบผ่านแล้ว
 from GDrive import * # ทดสอบผ่านแล้ว
+from Name_Random import * # ทดสอบผ่านแล้ว 
 from datetime import datetime,date
 
 
@@ -14,7 +15,7 @@ from datetime import datetime,date
 
 
 # ตำแหน่ง API
-plate_url = "https://d476-2001-fb1-108-52a2-a922-4b37-34f-125.ap.ngrok.io"
+plate_url = "https://d741-2001-fb1-10b-d49b-4d97-efa2-d0b-b8ac.ap.ngrok.io"
 
 # ตั้งค่า Timezone
 tz = pytz.timezone('Asia/Bangkok')
@@ -39,6 +40,9 @@ list_path_drive_video =[]
 
 #  เรียกใช้งาน Class ของ Model_Plate
 model_plate = Model_Plate()
+
+# เรียกใช้งาน Class ของ Name_Random
+name_random = Name_Random()
 
 # เรียกใช้ class ของ Car_Detect
 car_detection = Car_Detection()
@@ -244,7 +248,7 @@ try:
           # กำหนดโซนเวลาและเวลาปัจจุบัน
           time_tz = datetime.now(tz)
           # กำหนดรูปแบบเวลา
-          current_time = time_tz.strftime("%H/%M/%S")
+          current_time = time_tz.strftime("%H:%M")
           
           # ตั้งค่าวันที่
           # ตั้งค่าวันที่ปัจจุบัน
@@ -293,6 +297,13 @@ try:
               # แสดงข้อมูลที่ Error  
               except Exception as e:
                 print("Error: Google Drive Upload")
+                
+              
+              try:
+                name = name_random.name_random(index)
+                
+              except Exception as e:
+                print("Error: Name Random")
 
 
               # แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
@@ -302,6 +313,7 @@ try:
                 print("index: ", index)
                 print("ocr_license: ", ocr_license_plate)
                 print("ocr_city: ", ocr_city_plate)
+                print('name: ', name)
                 print("type: ", type_model)
                 print("type_car_img: ", type_car_img)
                 print("color: ", color)
@@ -330,6 +342,7 @@ try:
                 # เรียงลำดับของข้อมูลที่จะส่งไปยัง API
                 detel_car = { 'id': f'{index}', # รหัสรถ
                           'license_plate': f'{ocr_license_plate}', # ทะเบียนรถ
+                          'name': f'{name}', # ชื่อเจ้าของรถ
                           'city': f'{ocr_city_plate}', # จังหวัด
                           'vehicle': f'{type_model}', # ประเภทรถ
                           'car_img_type': f'{type_car_img}', # ประเภทรูปภาพ
